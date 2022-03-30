@@ -74,6 +74,7 @@ class PageCreator extends BaseController
         $testTableName = $wpdb->prefix . "users";
 
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "subscription_valid_until", "date", "display_name", "'0000-00-00'");
+        $this->createDatabaseColumn("$wpdb->prefix" . "users", "registered_courses", "tinyint(11)", "display_name", 0);
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "membership", "tinyint(11)", "display_name", 0);
         $this->createDatabaseColumn("$wpdb->prefix" . "wc_order_product_lookup", "verified", "tinyint(11)", "shipping_tax_amount", 0);
     }
