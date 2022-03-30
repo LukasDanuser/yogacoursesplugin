@@ -1,0 +1,19 @@
+{
+    "name": "lukasd/courses-plugin",
+    "description": "Courses Plugin",
+    "type": "project",
+    "license": "GPL",
+    "autoload": {
+        "psr-4": {
+            "Inc\\": "./Inc"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lukas",
+            "email": "l.danuser@rafisa.ch"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
