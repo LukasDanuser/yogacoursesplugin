@@ -137,7 +137,7 @@ if (!empty($results)) {
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Teilnehmer: </b> $row->registrations</p>
                     <p><b>Datum:</b> $courseDate</p>
-                    <p><b>Link:</b><a href=\"url\"> $row->url</a></p>
+                    <p><b>Link:</b><a href=\"$row->url\"> $row->url</a></p>
                     <p><b>Produkt ID:</b> $row->product_id</p>
                     <div class=\"text-center\">
                         <label class=\"control-label\" style=\"padding: 5px; font-size: 20px;\">
