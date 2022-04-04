@@ -22,7 +22,7 @@ class Admin extends BaseController
     public function add_admin_pages()
     {
         add_menu_page('Courses Plugin', 'Courses', 'manage_options', 'courses_plugin', array($this, 'admin_index'), '', '110');
-        add_submenu_page('courses_plugin', 'Courses Plugin', '', 'manage_options', 'upload_file', array($this, 'admin_upload_index'), '', '110');
+        add_submenu_page('courses_plugin', 'Courses Plugin', null, 'manage_options', 'upload_file', array($this, 'admin_upload_index'), 2);
     }
 
     public function admin_upload_index()
