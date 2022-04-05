@@ -138,6 +138,14 @@ class PageCreator extends BaseController
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
+        $table_name = $wpdb->prefix . "courseVideos";
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            id mediumint(9) NOT NULL AUTO_INCREMENT, 
+            file_path text NOT NULL,
+            file_url text NOT NULL,
+            PRIMARY KEY  (id)
+          ) $charset_collate;";
+        dbDelta($sql);
     }
 
     function createDatabaseColumn($table, $column, $datatype, $after, $default)
