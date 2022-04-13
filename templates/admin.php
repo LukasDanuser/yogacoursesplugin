@@ -115,9 +115,19 @@ if (!empty($results)) {
     auto);\">";
     $count = 0;
     $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $videos = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseVideos");
     $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
     $t1 = 1;
     $t2 = 1;
+    foreach ($videos as $video) {
+
+        echo "
+        <video width=\"320\" height=\"240\" controls>
+        <source src=\"$video->file_url\" type=\"video/mp4\">
+        Your browser does not support the video tag.
+      </video> 
+        ";
+    }
     foreach ($results as $row) {
         $count++;
         if ($count > 5) {
