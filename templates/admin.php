@@ -115,6 +115,10 @@ if ($deleteVid == "deleteVid") {
 <form action="admin.php?page=upload_file" method="post" enctype="multipart/form-data">
     <label for="file"><span>Filename:</span></label>
     <input type="file" name="file" id="file" />
+    <label for="vidName"></label>
+    <input type="text" name="vidName" id="vidName" placeholder="Name des Videos" required><br><br>
+    <label for="vidDes"></label>
+    <input type="text" name="vidDes" id="vidDes" placeholder="Beschreibung" required>
     <br />
     <input type="submit" name="submit" value="Submit" />
 </form>
