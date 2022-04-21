@@ -29,13 +29,14 @@ echo <<<EOL
 </head>
 EOL;
 
-$course_name = isset($_POST['course_name']) ? $_POST['course_name'] : "";
-$price = isset($_POST['price']) ? $_POST['price'] : "";
-$description = isset($_POST['description']) ? $_POST['description'] : "";
-$link = isset($_POST['link']) ? $_POST['link'] : "";
-$date = isset($_POST['date']) ? $_POST['date'] : "";
-$submit = isset($_POST['submit']) ? "submitted" : "";
-$delete = isset($_GET['delete']) ? "delete" : "";
+$course_name = isset($_REQUEST['course_name']) ? $_REQUEST['course_name'] : "";
+$price = isset($_REQUEST['price']) ? $_REQUEST['price'] : "";
+$description = isset($_REQUEST['description']) ? $_REQUEST['description'] : "";
+$link = isset($_REQUEST['link']) ? $_REQUEST['link'] : "";
+$date = isset($_REQUEST['date']) ? $_REQUEST['date'] : "";
+$submit = isset($_REQUEST['submit']) ? "submitted" : "";
+$delete = isset($_REQUEST['delete']) ? "delete" : "";
+$deleteVid = isset($_REQUEST['deleteVid']) ? 'deleteVid' : "";
 global $wpdb;
 
 
@@ -55,20 +56,29 @@ function createProduct($title, $body, $price, $sku)
 
     return $post_id;
 }
-
-if ($delete == "delete") {
-
-
-    $id = isset($_GET['delete']) ? $_GET['delete'] : 0;
-    $result = $wpdb->get_var("SELECT product_id FROM $wpdb->prefix" . "courses WHERE id = $id");
-    $table = "$wpdb->prefix" . "wc_product_meta_lookup";
-    $wpdb->delete($table, array('product_id' => $result));
-    $table = "$wpdb->prefix" . "posts";
-    $wpdb->delete($table, array('ID' => $result));
-    $table = "$wpdb->prefix" . "courses";
+if ($deleteVid == "deleteVid") {
+    $id = isset($_REQUEST['deleteVid']) ? $_REQUEST['deleteVid'] : 0;
+    $video = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courseVideos" . " WHERE id = $id");
+    $table = "$wpdb->prefix" . "courseVideos";
+    wp_delete_file($video->file_path);
     $wpdb->delete($table, array('id' => $id));
-
 ?><script>
+        window.location.href = "/wp-admin/admin.php?page=courses_plugin";
+    </script><?php
+            }
+            if ($delete == "delete") {
+
+
+                $id = isset($_REQUEST['delete']) ? $_REQUEST['delete'] : 0;
+                $result = $wpdb->get_var("SELECT product_id FROM $wpdb->prefix" . "courses WHERE id = $id");
+                $table = "$wpdb->prefix" . "wc_product_meta_lookup";
+                $wpdb->delete($table, array('product_id' => $result));
+                $table = "$wpdb->prefix" . "posts";
+                $wpdb->delete($table, array('ID' => $result));
+                $table = "$wpdb->prefix" . "courses";
+                $wpdb->delete($table, array('id' => $id));
+
+                ?><script>
         window.location.href = "/wp-admin/admin.php?page=courses_plugin";
     </script><?php
             }
@@ -121,11 +131,14 @@ if (!empty($results)) {
     $t2 = 1;
     foreach ($videos as $video) {
 
-        echo "
+        echo "<div id=\"video$count\">
         <video width=\"320\" height=\"240\" controls>
         <source src=\"$video->file_url\" type=\"video/mp4\">
         Your browser does not support the video tag.
       </video> 
+      <br>
+      <button onclick=\"window.location.href='$actual_link&deleteVid=$video->id' ;\">Löschen</button>
+      </div>
         ";
     }
     foreach ($results as $row) {
