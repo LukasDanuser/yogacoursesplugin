@@ -52,3 +52,6 @@ if ($movefile && !isset($movefile['error'])) {
      */
     echo $movefile['error'];
 }
+?><script>
+    window.location.href = "/wp-admin/admin.php?page=courses_plugin";
+</script>
