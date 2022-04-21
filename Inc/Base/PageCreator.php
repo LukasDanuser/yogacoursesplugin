@@ -143,6 +143,8 @@ class PageCreator extends BaseController
             id mediumint(9) NOT NULL AUTO_INCREMENT, 
             file_path text NOT NULL,
             file_url text NOT NULL,
+            video_name text NOT NULL,
+            video_description text NOT NULL,
             PRIMARY KEY  (id)
           ) $charset_collate;";
         dbDelta($sql);
