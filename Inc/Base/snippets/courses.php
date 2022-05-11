@@ -23,10 +23,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 global $wpdb;
 $membership = 0;
-$results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses");
+$results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses ORDER BY date ASC");
 $count = 0;
 $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
+$repeatTemp = "";
+
 if (is_user_logged_in()) {
     $userID = get_current_user_id();
     $membership = $wpdb->get_var("SELECT membership FROM $wpdb->prefix" . "users WHERE ID = $userID");
@@ -40,6 +42,35 @@ if (is_user_logged_in()) {
                 $t1 = 1;
                 $t2 = 1;
                 foreach ($results as $row) {
+                    switch ($row->repeat_every) {
+                        case "day":
+                            $repeatTemp = "Täglich";
+                            break;
+                        case "week":
+                            $repeatTemp = "Wöchentlich";
+                            break;
+                        case "month":
+                            $repeatTemp = "Monatlich";
+                            break;
+                        case "2month":
+                            $repeatTemp = "Alle 2 Monate";
+                            break;
+                        case "3month":
+                            $repeatTemp = "Alle 3 Monate";
+                            break;
+                        case "4month":
+                            $repeatTemp = "Alle 4 Monate";
+                            break;
+                        case "5month":
+                            $repeatTemp = "Alle 5 Monate";
+                            break;
+                        case "6month":
+                            $repeatTemp = "Alle 6 Monate";
+                            break;
+                        case "never":
+                            $repeatTemp = "Einmalig";
+                            break;
+                    }
                     $count++;
                     if ($count > 5) {
                         $t2++;
@@ -53,6 +84,7 @@ if (is_user_logged_in()) {
                     <p>$courseDate</p>
                     <p>CHF $row->price</p>
                     <p>$row->description</p>
+                    <p>$repeatTemp</p>
                     </a>
                     </div>
                     ";
@@ -71,6 +103,35 @@ if (is_user_logged_in()) {
                 $t1 = 1;
                 $t2 = 1;
                 foreach ($results as $row) {
+                    switch ($row->repeat_every) {
+                        case "day":
+                            $repeatTemp = "Täglich";
+                            break;
+                        case "week":
+                            $repeatTemp = "Wöchentlich";
+                            break;
+                        case "month":
+                            $repeatTemp = "Monatlich";
+                            break;
+                        case "2month":
+                            $repeatTemp = "Alle 2 Monate";
+                            break;
+                        case "3month":
+                            $repeatTemp = "Alle 3 Monate";
+                            break;
+                        case "4month":
+                            $repeatTemp = "Alle 4 Monate";
+                            break;
+                        case "5month":
+                            $repeatTemp = "Alle 5 Monate";
+                            break;
+                        case "6month":
+                            $repeatTemp = "Alle 6 Monate";
+                            break;
+                        case "never":
+                            $repeatTemp = "Einmalig";
+                            break;
+                    }
                     $count++;
                     if ($count > 5) {
                         $t2++;
@@ -83,6 +144,7 @@ if (is_user_logged_in()) {
                     <p>$row->course_name</p>
                     <p>$courseDate</p>
                     <p>$row->description</p>
+                    <p>$repeatTemp</p>
                     </a>
                     </div>
                     ";
@@ -96,6 +158,35 @@ if (is_user_logged_in()) {
             $t1 = 1;
             $t2 = 1;
             foreach ($results as $row) {
+                switch ($row->repeat_every) {
+                    case "day":
+                        $repeatTemp = "Täglich";
+                        break;
+                    case "week":
+                        $repeatTemp = "Wöchentlich";
+                        break;
+                    case "month":
+                        $repeatTemp = "Monatlich";
+                        break;
+                    case "2month":
+                        $repeatTemp = "Alle 2 Monate";
+                        break;
+                    case "3month":
+                        $repeatTemp = "Alle 3 Monate";
+                        break;
+                    case "4month":
+                        $repeatTemp = "Alle 4 Monate";
+                        break;
+                    case "5month":
+                        $repeatTemp = "Alle 5 Monate";
+                        break;
+                    case "6month":
+                        $repeatTemp = "Alle 6 Monate";
+                        break;
+                    case "never":
+                        $repeatTemp = "Einmalig";
+                        break;
+                }
                 $count++;
                 if ($count > 5) {
                     $t2++;
@@ -103,11 +194,13 @@ if (is_user_logged_in()) {
                 $cDate = new DateTime($row->date);
                 $courseDate = $cDate->format('d.m.Y H:i');
                 echo "
-                <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\"><a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
+                <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\">
+                <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
                 <p>$row->course_name</p>
                 <p>$courseDate</p>
                 <p>CHF $row->price</p>
                 <p>$row->description</p>
+                <p>$repeatTemp</p>
                 </a>
                 </div>
                 ";
@@ -121,6 +214,35 @@ if (is_user_logged_in()) {
         $t1 = 1;
         $t2 = 1;
         foreach ($results as $row) {
+            switch ($row->repeat_every) {
+                case "day":
+                    $repeatTemp = "Täglich";
+                    break;
+                case "week":
+                    $repeatTemp = "Wöchentlich";
+                    break;
+                case "month":
+                    $repeatTemp = "Monatlich";
+                    break;
+                case "2month":
+                    $repeatTemp = "Alle 2 Monate";
+                    break;
+                case "3month":
+                    $repeatTemp = "Alle 3 Monate";
+                    break;
+                case "4month":
+                    $repeatTemp = "Alle 4 Monate";
+                    break;
+                case "5month":
+                    $repeatTemp = "Alle 5 Monate";
+                    break;
+                case "6month":
+                    $repeatTemp = "Alle 6 Monate";
+                    break;
+                case "never":
+                    $repeatTemp = "Einmalig";
+                    break;
+            }
             $count++;
             if ($count > 5) {
                 $t2++;
@@ -128,11 +250,13 @@ if (is_user_logged_in()) {
             $cDate = new DateTime($row->date);
             $courseDate = $cDate->format('d.m.Y H:i');
             echo "
-            <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\"><a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
+            <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\">
+            <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
             <p>$row->course_name</p>
             <p>$courseDate</p>
             <p>CHF $row->price</p>
             <p>$row->description</p>
+            <p>$repeatTemp</p>
             </a>
             </div>
             ";
