@@ -34,6 +34,7 @@ $price = isset($_REQUEST['price']) ? $_REQUEST['price'] : "";
 $description = isset($_REQUEST['description']) ? $_REQUEST['description'] : "";
 $link = isset($_REQUEST['link']) ? $_REQUEST['link'] : "";
 $date = isset($_REQUEST['date']) ? $_REQUEST['date'] : "";
+$repeat = isset($_POST['repeat']) ? $_POST['repeat'] : "";
 $submit = isset($_REQUEST['submit']) ? "submitted" : "";
 $delete = isset($_REQUEST['delete']) ? "delete" : "";
 $deleteVid = isset($_REQUEST['deleteVid']) ? 'deleteVid' : "";
@@ -92,6 +93,7 @@ if ($deleteVid == "deleteVid") {
                         'course_name' => $course_name,
                         'price' => $price,
                         'date' => $date,
+                        'repeat_every' => $repeat,
                         'description' => $description,
                         'url' => $link,
                         'product_id' => $product_id
@@ -106,6 +108,18 @@ if ($deleteVid == "deleteVid") {
     <input type="number" name="price" id="price" required><br><br>
     <label for="date">Datum</label>
     <input type="datetime-local" name="date" id="date" required><br><br>
+    <label for="repeat">Wiederholen</label>
+    <select name="repeat" id="repeat" required>
+        <option value="day">Täglich</option>
+        <option value="week">Wöchentlich</option>
+        <option value="month">Monatlich</option>
+        <option value="2month">Alle 2 Monate</option>
+        <option value="3month">Alle 3 Monate</option>
+        <option value="4month">Alle 4 Monate</option>
+        <option value="5month">Alle 5 Monate</option>
+        <option value="6month">Alle 6 Monate</option>
+        <option value="never">Nie</option>
+    </select><br><br>
     <label for="description">Beschreibung</label>
     <input type="text" name="description" id="description" required><br><br>
     <label for="link">Link</label>
@@ -114,37 +128,28 @@ if ($deleteVid == "deleteVid") {
 </form>
 <form action="admin.php?page=upload_file" method="post" enctype="multipart/form-data">
     <label for="file"><span>Filename:</span></label>
-    <input type="file" name="file" id="file" />
+    <input type="file" name="file" id="file" /><br><br>
     <label for="vidName"></label>
     <input type="text" name="vidName" id="vidName" placeholder="Name des Videos" required><br><br>
     <label for="vidDes"></label>
     <input type="text" name="vidDes" id="vidDes" placeholder="Beschreibung" required>
-    <br />
+    <br /><br>
     <input type="submit" name="submit" value="Submit" />
 </form>
 <?php
-$results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses");
+$results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses ORDER BY date ASC");
+$videos = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseVideos");
+$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
 if (!empty($results)) {
-    echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: auto; grid-gap: 10px; grid-auto-rows: minmax(100px,
+    echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: minmax(auto,
+    520px); grid-gap: 10px; grid-auto-rows: minmax(100px,
     auto);\">";
     $count = 0;
-    $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-    $videos = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseVideos");
     $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
     $t1 = 1;
     $t2 = 1;
-    foreach ($videos as $video) {
 
-        echo "<div id=\"video$count\">
-        <video width=\"320\" height=\"240\" controls>
-        <source src=\"$video->file_url\" type=\"video/mp4\">
-        Your browser does not support the video tag.
-      </video> 
-      <br>
-      <button onclick=\"window.location.href='$actual_link&deleteVid=$video->id' ;\">Löschen</button>
-      </div>
-        ";
-    }
     foreach ($results as $row) {
         $count++;
         if ($count > 5) {
@@ -153,6 +158,36 @@ if (!empty($results)) {
         $cDate = new DateTime($row->date);
         $courseDate = $cDate->format('d.m.Y H:i');
         $count++;
+        $repeatTemp = "";
+        switch ($row->repeat_every) {
+            case "day":
+                $repeatTemp = "Täglich";
+                break;
+            case "week":
+                $repeatTemp = "Wöchentlich";
+                break;
+            case "month":
+                $repeatTemp = "Monatlich";
+                break;
+            case "2month":
+                $repeatTemp = "Alle 2 Monate";
+                break;
+            case "3month":
+                $repeatTemp = "Alle 3 Monate";
+                break;
+            case "4month":
+                $repeatTemp = "Alle 4 Monate";
+                break;
+            case "5month":
+                $repeatTemp = "Alle 5 Monate";
+                break;
+            case "6month":
+                $repeatTemp = "Alle 6 Monate";
+                break;
+            case "never":
+                $repeatTemp = "Nie";
+                break;
+        }
         echo "
         <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\">
         <div class=\"col-12 col-md-2 mt-4\">
@@ -164,6 +199,7 @@ if (!empty($results)) {
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Teilnehmer: </b> $row->registrations</p>
                     <p><b>Datum:</b> $courseDate</p>
+                    <p><b>Wiederholung:</b> $repeatTemp</p>
                     <p><b>Link:</b><a href=\"$row->url\"> $row->url</a></p>
                     <p><b>Produkt ID:</b> $row->product_id</p>
                     <div class=\"text-center\">
@@ -172,12 +208,39 @@ if (!empty($results)) {
                         </label>
                     </div>
                     <div class=\" Löschen text-center\">
-                        <button onclick=\"window.location.href='$actual_link&delete=$row->id' ;\">Löschen</button>
+                        <button onclick=\"window.location.href='$actual_link&delete=$row->id';\">Löschen</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+        ";
+        $t1++;
+    }
+    echo "</div><br>";
+}
+if (!empty($videos)) {
+    $count = 0;
+    $t1 = 1;
+    $t2 = 1;
+    echo "<div class=\"videos\" style=\"display: grid; grid-template-columns: minmax(auto,
+    520px); grid-gap: 10px; grid-auto-rows: minmax(100px,
+    auto);\">";
+    foreach ($videos as $video) {
+        $count++;
+        if ($count > 5) {
+            $t2++;
+        }
+        echo "<div id=\"video$count\" class=\"video\" style=\"grid-column: $t1; grid-row: $t2; border: 1px solid black; max-width: 520px; background: white;\">
+        <p style=\"padding-left: 5px;\">$video->video_name</p>
+        <p style=\"padding-left: 5px;\">$video->video_description</p>
+        <video width=\"320\" height=\"240\" controls>
+        <source src=\"$video->file_url\" type=\"video/mp4\">
+        Your browser does not support the video tag.
+        </video> 
+        <br><br>
+      <button onclick=\"window.location.href='$actual_link&deleteVid=$video->id';\" style=\"padding-left: 5px;\">Löschen</button>
+      </div>
         ";
         $t1++;
     }

@@ -43,8 +43,8 @@ if ($movefile && !isset($movefile['error'])) {
         array(
             'file_path' => $file_path,
             'file_url' => $file_url,
-            'video_name' => $_REQUEST['video_name'],
-            'video_description' => $_REQUEST['video_description'],
+            'video_name' => $_REQUEST['vidName'],
+            'video_description' => $_REQUEST['vidDes'],
         )
     );
 } else {
