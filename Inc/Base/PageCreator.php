@@ -129,6 +129,7 @@ class PageCreator extends BaseController
   course_name text NOT NULL,
   price int NOT NULL,
   date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+  repeat_every text NOT NULL,
   description text NOT NULL,
   url varchar(55) DEFAULT '' NOT NULL,
   product_id int NOT NULL UNIQUE,
