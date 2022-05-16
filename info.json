@@ -3,7 +3,7 @@
     "slug": "courses-plugin",
     "author": "Lukas Danuser",
     "version": "1.0",
-    "download_url": "https://gitlab.rafisa.org/l.danuser/coursesplugin",
+    "download_url": "https://gitlab.rafisa.org/l.danuser/coursesplugin/-/blob/master/coursesplugin.zip",
     "requires": "3.0",
     "tested": "5.8",
     "requires_php": "5.3",
