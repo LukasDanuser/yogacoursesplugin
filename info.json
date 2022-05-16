@@ -6,7 +6,7 @@
     "download_url": "https://gitlab.rafisa.org/l.danuser/coursesplugin/-/blob/master/coursesplugin.zip",
     "requires": "3.0",
     "tested": "5.8",
-    "requires_php": "5.3",
+    "requires_php": "8.0",
     "last_updated": "2021-01-30 02:10:00",
     "sections": {
         "description": "Create and sell online courses."
