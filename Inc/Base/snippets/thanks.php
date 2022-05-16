@@ -24,19 +24,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 global $wpdb;
 
 $productID = isset($_GET['product_id']) ? $_GET['product_id'] : 0;
-$results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
+$courseInfo = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courses WHERE product_id = $productID;");
+
 $name = wp_get_current_user()->display_name;
 $to = wp_get_current_user()->user_email;
+var_dump($courseInfo);
 
 $subject = "Yoga Kurs";
-$course_name = "";
-$course_date = "";
-$course_link = "";
-foreach ($results as $courseInfo) {
-    $course_name = $courseInfo[0]->course_name;
-    $course_date = $courseInfo[0]->date;
-    $course_link = $courseInfo[0]->url;
-}
+$course_name = $courseInfo->course_name;
+$course_date = $courseInfo->date;
+$course_link = $courseInfo->url;
+
 $message = "Guten Tag $name \n\nVielen Dank für Ihren Einkauf bei uns!\nSie haben sich für den Kurs \"$course_name\" entschieden.\n\nTreten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link \n\nFreundliche Grüsse";
 
 mail($to, $subject, $message, "", "");
