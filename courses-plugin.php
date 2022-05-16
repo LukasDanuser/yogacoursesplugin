@@ -11,6 +11,8 @@ Version: 1.5.2
 Author: Lukas Danuser
 License: GPLv3 or later
 Text Domain: courses-plugin
+GitHub Plugin URI: l.danuser/coursesplugin
+GitHub Plugin URI: https://gitlab.rafisa.org/l.danuser/coursesplugin
 */
 
 /*
