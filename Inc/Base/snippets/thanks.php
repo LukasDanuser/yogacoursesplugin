@@ -34,7 +34,7 @@ $course_name = $courseInfo->course_name;
 $course_date = $courseInfo->date;
 $course_link = $courseInfo->url;
 
-$message = "Guten Tag $name \n\nVielen Dank für Ihren Einkauf bei uns!\nSie erhalten in kürze eine email!";
+$message = "Guten Tag $name \n\nVielen Dank für Ihren Einkauf bei uns!\nSie erhalten in kürze eine Email!";
 
 mail($to, $subject, $message, "", "");
 echo $message;
