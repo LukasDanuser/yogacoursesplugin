@@ -149,7 +149,7 @@ class Courses_Updater
     function createSnippets($name)
     {
         global $wpdb;
-        $code = file_get_contents('Inc/Basesnippets/' . strtolower($name) . '.php', "r");
+        $code = file_get_contents('Inc/Bases/nippets/' . strtolower($name) . '.php', "r");
         $table_name = "$wpdb->prefix" . "xyz_ips_short_code";
         $wpdb->delete($table_name, array('title' => $name));
         $wpdb->insert(
