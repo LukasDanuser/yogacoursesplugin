@@ -11,8 +11,6 @@ Version: 1.5.2
 Author: Lukas Danuser
 License: GPLv3 or later
 Text Domain: courses-plugin
-GitHub Plugin URI: l.danuser/coursesplugin
-GitHub Plugin URI: https://gitlab.rafisa.org/l.danuser/coursesplugin
 */
 
 /*
@@ -65,3 +63,11 @@ register_deactivation_hook(__FILE__, 'deactivate_courses_plugin');
 if (class_exists('Inc\\Init')) {
     Inc\Init::register_services();
 }
+
+// Include our updater file
+include_once(plugin_dir_path(__FILE__) . 'updater.php');
+
+$updater = new Courses_Updater(__FILE__); // instantiate our class
+$updater->set_username('l.danuser'); // set username
+$updater->set_repository('coursesplugin'); // set repo
+$updater->initialize();
