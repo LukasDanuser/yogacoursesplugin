@@ -122,8 +122,7 @@ class Courses_Updater
         $result['destination'] = $install_directory; // Set the destination for the rest of the stack
 
         if ($this->active) { // If it was active
-            Inc\Base\Deactivate::deactivate();
-            Inc\Base\Activate::activate();
+            activate_plugin(plugin_basename(dirname(__FILE__)) . '/courses-plugin.php'); // Reactivate
         }
         return $result;
     }
