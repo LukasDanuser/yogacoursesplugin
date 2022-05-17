@@ -122,9 +122,44 @@ class Courses_Updater
         $result['destination'] = $install_directory; // Set the destination for the rest of the stack
 
         if ($this->active) { // If it was active
-            Inc\Base\PageCreator::class;
+            global $wp_query;
+            if (!isset($wp_query)) {
+                return;
+            }
+            $snippets = [
+                'addtocart',
+                'Courses',
+                'Course',
+                'Expired',
+                'Failure',
+                'Membership',
+                'Thanks',
+                'Verify',
+                'deleteExpCourse'
+            ];
+            foreach ($snippets as $snippet) {
+                global $wpdb;
+                $this->createSnippets($snippet);
+            }
             activate_plugin($this->basename); // Reactivate
         }
         return $result;
+    }
+
+    function createSnippets($name)
+    {
+        global $wpdb;
+        $code = file_get_contents('Inc/Basesnippets/' . strtolower($name) . '.php', "r");
+        $table_name = "$wpdb->prefix" . "xyz_ips_short_code";
+        $wpdb->delete($table_name, array('title' => $name));
+        $wpdb->insert(
+            $table_name,
+            array(
+                'title' => $name,
+                'content' => strval($code),
+                'short_code' => "[xyz-ips snippet=\"$name\"]",
+                'status' => 1
+            )
+        );
     }
 }
