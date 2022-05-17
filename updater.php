@@ -9,7 +9,6 @@ class Courses_Updater
     private $repository;
     private $authorize_token;
     private $github_response;
-    private $branch;
 
 
     public function __construct($file)
