@@ -30,7 +30,7 @@ class PageCreator extends BaseController
     function __construct()
     {
     }
-    public  function register()
+    public function register()
     {
         global $wp_query;
         if (!isset($wp_query)) {
