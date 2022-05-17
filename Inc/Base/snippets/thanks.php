@@ -23,12 +23,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 global $wpdb;
 
-$productID = isset($_GET['product_id']) ? $_GET['product_id'] : 0;
+$productID = isset($_GET['id']) ? $_GET['id'] : 0;
 $courseInfo = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courses WHERE product_id = $productID;");
 
 $name = wp_get_current_user()->display_name;
 $to = wp_get_current_user()->user_email;
-var_dump($courseInfo);
 
 $subject = "Yoga Kurs";
 $course_name = $courseInfo->course_name;
