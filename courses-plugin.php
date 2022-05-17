@@ -7,7 +7,7 @@
 /*
 Plugin Name: Courses Plugin
 Description: Create and sell online courses.
-Version: 1.5.2
+Version: 1.0.0
 Author: Lukas Danuser
 License: GPLv3 or later
 Text Domain: courses-plugin
@@ -68,6 +68,6 @@ if (class_exists('Inc\\Init')) {
 include_once(plugin_dir_path(__FILE__) . 'updater.php');
 
 $updater = new Courses_Updater(__FILE__); // instantiate our class
-$updater->set_username('l.danuser'); // set username
+$updater->set_username('LukasDanuser'); // set username
 $updater->set_repository('coursesplugin'); // set repo
 $updater->initialize();
