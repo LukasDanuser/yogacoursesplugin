@@ -37,3 +37,4 @@ $course_link = $courseInfo->url;
 $message = "Guten Tag $name \n\nVielen Dank für Ihren Einkauf bei uns!\nSie haben sich für den Kurs \"$course_name\" entschieden.\n\nTreten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link \n\nFreundliche Grüsse";
 
 mail($to, $subject, $message, "", "");
+echo $message;
