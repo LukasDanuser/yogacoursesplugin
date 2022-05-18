@@ -103,7 +103,8 @@ if (isset($_GET['order_id'])) {
             } else {
                 $message = "Guten Tag $first_name $last_name\n\nVielen Dank für Ihren Einkauf bei uns!\nSie haben sich für die $membershipStr Mitgliedschaft entschieden.\n\nFreundliche Grüsse";
             }
-            mail($to, $subject, $message, "", "");
+            $headers = array('Content-Type: text/html; charset=UTF-8');
+            wp_mail($to, $subject, $message, $headers);
             $registrations = $wpdb->get_var("SELECT registrations FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
             $table = $wpdb->prefix . 'courses';
             $data = array('registrations' => $registrations + 1);

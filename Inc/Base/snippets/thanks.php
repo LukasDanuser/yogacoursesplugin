@@ -34,7 +34,19 @@ $course_name = $courseInfo->course_name;
 $course_date = $courseInfo->date;
 $course_link = $courseInfo->url;
 
-$message = "Guten Tag $name \n\nVielen Dank für Ihren Einkauf bei uns!\nSie haben sich für den Kurs \"$course_name\" entschieden.\n\nTreten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link \n\nFreundliche Grüsse!";
+$message = "<html>
 
-mail($to, $subject, $message, "", "");
-echo "<div style=\"float: center;\">Vielen Dank für Ihren Einkauf bei uns!</div>";
+<div class=\"container\" style=\"border: 1px solid black;\">
+<div class=\"content\" style=\"padding: 5px;\">
+<p>Hallo $name</p>
+<p>Vielen Dank für den kauf vom Kurs \"$course_name\".</p>
+<p>Treten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
+<p>Freundliche Grüße</p>
+</div>
+</div>
+</html>";
+
+$headers = array('Content-Type: text/html; charset=UTF-8');
+
+wp_mail($to, $subject, $message, $headers) == true ? $mailSent = "Mail sent to $to" : $mailSent = "Mail not sent to $to";
+echo "<div style=\"float: center;\">Vielen Dank für Ihren Einkauf bei uns!\n$mailSent</div>";
