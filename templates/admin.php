@@ -21,13 +21,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-echo <<<EOL
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="cardStyle.css
-    ">
-</head>
-EOL;
 
 $course_name = isset($_REQUEST['course_name']) ? $_REQUEST['course_name'] : "";
 $price = isset($_REQUEST['price']) ? $_REQUEST['price'] : "";
