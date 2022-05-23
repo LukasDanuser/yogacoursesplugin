@@ -135,22 +135,21 @@ $videos = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseVideos");
 $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 if (!empty($results)) {
-    echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: minmax(auto,
-    520px); grid-gap: 10px; grid-auto-rows: minmax(100px,
-    auto);\">";
-    $count = 0;
+    echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat(auto-fill, minmax(20em, 1fr)); grid-gap: 1rem; grid-auto-rows: repeat(auto-fill, minmax(20em, 1fr));\">";
+    $countCourse = 0;
     $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
-    $t1 = 1;
-    $t2 = 1;
+    $t1Course = 1;
+    $t2Course = 1;
 
     foreach ($results as $row) {
-        $count++;
-        if ($count > 5) {
-            $t2++;
+        $countCourse++;
+        if ($countCourse > 5) {
+            $t2Course++;
+            $t1Course = 1;
+            $countCourse = 0;
         }
         $cDate = new DateTime($row->date);
         $courseDate = $cDate->format('d.m.Y H:i');
-        $count++;
         $repeatTemp = "";
         switch ($row->repeat_every) {
             case "day":
@@ -182,12 +181,11 @@ if (!empty($results)) {
                 break;
         }
         echo "
-        <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\">
-        <div class=\"col-12 col-md-2 mt-4\">
-            <div id=\"1\" class=\"card\" style=\"border-color: red\">
+        <div class=\"course\" style=\"grid-column: $t1Course; grid-row: $t2Course;\">
+            <div id=\"course$row->id\" class=\"course-card\">
                 <div class=\"card-body\">
                     <h5 class=\"card-title text-center\"><b><u>
-                                <p style=\"color: black;\">$row->course_name</p>
+                                <p>$row->course_name</p>
                             </u></b></h5>
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Teilnehmer: </b> $row->registrations</p>
@@ -196,8 +194,8 @@ if (!empty($results)) {
                     <p><b>Link:</b><a href=\"$row->url\"> $row->url</a></p>
                     <p><b>Produkt ID:</b> $row->product_id</p>
                     <div class=\"text-center\">
-                        <label class=\"control-label\" style=\"padding: 5px; font-size: 20px;\">
-                            <p style=\"color: grey;\">CHF $row->price</p>
+                        <label class=\"control-label\" >
+                            <p>CHF $row->price</p>
                         </label>
                     </div>
                     <div class=\" Löschen text-center\">
@@ -205,37 +203,43 @@ if (!empty($results)) {
                     </div>
                 </div>
             </div>
-        </div>
     </div>
         ";
-        $t1++;
+        $t1Course++;
     }
     echo "</div><br>";
 }
 if (!empty($videos)) {
-    $count = 0;
-    $t1 = 1;
-    $t2 = 1;
-    echo "<div class=\"videos\" style=\"display: grid; grid-template-columns: minmax(auto,
-    520px); grid-gap: 10px; grid-auto-rows: minmax(100px,
-    auto);\">";
+    $countVideo = 0;
+    $t1Video = 1;
+    $t2Video = 1;
+    echo "<div class=\"videos\" style=\"display: grid; grid-template-columns: repeat(auto-fill, minmax(20em, 1fr)); grid-gap: 1rem; grid-auto-rows: repeat(auto-fill, minmax(20em, 1fr));\">";
     foreach ($videos as $video) {
-        $count++;
-        if ($count > 5) {
+        $countVideo++;
+        if ($countVideo > 5) {
             $t2++;
+            $t1Video = 1;
+            $countVideo = 0;
         }
-        echo "<div id=\"video$count\" class=\"video\" style=\"grid-column: $t1; grid-row: $t2; border: 1px solid black; max-width: 520px; background: white;\">
-        <p style=\"padding-left: 5px;\">$video->video_name</p>
-        <p style=\"padding-left: 5px;\">$video->video_description</p>
-        <video width=\"320\" height=\"240\" controls>
+        echo "
+      <div class=\"video\" style=\"grid-column: $t1Video; grid-row: $t2Video;\">
+      <div id=\"video$row->id\" class=\"video-card\">
+          <div class=\"video-body\">
+              <h5 class=\"video-title text-center\"><b><u>
+                          <p>$video->video_name</p>
+                      </u></b></h5>
+              <p class=\"video-text\">$video->video_description</p>
+              <video width=\"320\" height=\"240\" controls>
         <source src=\"$video->file_url\" type=\"video/mp4\">
         Your browser does not support the video tag.
-        </video> 
-        <br><br>
-      <button onclick=\"window.location.href='$actual_link&deleteVid=$video->id';\" style=\"padding-left: 5px;\">Löschen</button>
+        </video> <br><br>
+              <div class=\" Löschen text-center\">
+                  <button onclick=\"window.location.href='$actual_link&deleteVid=$video->id';\">Löschen</button>
+              </div>
+          </div>
       </div>
-        ";
-        $t1++;
+</div>";
+        $t1Video++;
     }
     echo "</div>";
 }

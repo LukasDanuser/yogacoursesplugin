@@ -1,4 +1,4 @@
-.card {
+.course-card, .video-card {
     position: relative;
     display: -ms-flexbox;
     display: flex;
@@ -8,12 +8,18 @@
     word-wrap: break-word;
     background-color: #fff;
     background-clip: border-box;
-    border: 1px solid rgba(0, 0, 0, .125);
-    border-top-color: rgba(0, 0, 0, 0.125);
-    border-right-color: rgba(0, 0, 0, 0.125);
-    border-bottom-color: rgba(0, 0, 0, 0.125);
-    border-left-color: rgba(0, 0, 0, 0.125);
+    border: 1px solid red;
     border-radius: .25rem;
+
+}
+
+.course, .video {
+    max-width: 20rem;
+
+}
+
+.card-body, .video-body {
+    margin: .5rem;
 }
 
 a, div {

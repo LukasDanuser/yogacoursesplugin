@@ -38,7 +38,7 @@ class Enqueue extends BaseController
     function enqueue()
     {
         // enqueue all scripts
-        wp_enqueue_style('style', $this->plugin_url . '/assets/style.css', __FILE__);
-        wp_enqueue_script('coursesscript', $this->plugin_url . '/assets/courses.js', __FILE__);
+        wp_enqueue_style('style', '/wp-content/plugins/coursesplugin/assets/style.css', __FILE__);
+        wp_enqueue_script('coursesscript', '/wp-content/plugins/coursesplugin/assets/courses.js', __FILE__);
     }
 }
