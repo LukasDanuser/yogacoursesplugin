@@ -136,17 +136,15 @@ $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https"
 
 if (!empty($results)) {
     echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat(auto-fill, minmax(20em, 1fr)); grid-gap: 1rem; grid-auto-rows: repeat(auto-fill, minmax(20em, 1fr));\">";
-    $countCourse = 0;
     $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
-    $t1Course = 1;
+    $t1Course = 0;
     $t2Course = 1;
 
     foreach ($results as $row) {
-        $countCourse++;
-        if ($countCourse > 5) {
+        $t1Course++;
+        if ($t1Course > 5) {
             $t2Course++;
             $t1Course = 1;
-            $countCourse = 0;
         }
         $cDate = new DateTime($row->date);
         $courseDate = $cDate->format('d.m.Y H:i');
@@ -205,21 +203,18 @@ if (!empty($results)) {
             </div>
     </div>
         ";
-        $t1Course++;
     }
     echo "</div><br>";
 }
 if (!empty($videos)) {
-    $countVideo = 0;
-    $t1Video = 1;
+    $t1Video = 0;
     $t2Video = 1;
     echo "<div class=\"videos\" style=\"display: grid; grid-template-columns: repeat(auto-fill, minmax(20em, 1fr)); grid-gap: 1rem; grid-auto-rows: repeat(auto-fill, minmax(20em, 1fr));\">";
     foreach ($videos as $video) {
-        $countVideo++;
-        if ($countVideo > 5) {
+        $t1Video++;
+        if ($t1Video > 5) {
             $t2++;
             $t1Video = 1;
-            $countVideo = 0;
         }
         echo "
       <div class=\"video\" style=\"grid-column: $t1Video; grid-row: $t2Video;\">
@@ -239,7 +234,6 @@ if (!empty($videos)) {
           </div>
       </div>
 </div>";
-        $t1Video++;
     }
     echo "</div>";
 }
