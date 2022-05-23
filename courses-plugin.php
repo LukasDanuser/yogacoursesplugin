@@ -7,7 +7,7 @@
 /*
 Plugin Name: Courses Plugin
 Description: Create and sell online courses.
-Version: 1.1.3
+Version: 1.1.4
 Author: Lukas Danuser
 License: GPLv3 or later
 Text Domain: courses-plugin
