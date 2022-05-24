@@ -28,7 +28,12 @@ $count = 0;
 $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
 $repeatTemp = "";
-
+$rowsNeeded = ceil(sizeof($results) / 4);
+$courseAmount = sizeof($results);
+$columnsNeeded = $courseAmount >= 4 ? 4 : 3;
+$columnsNeeded = $courseAmount == 2 ? 2 : $columnsNeeded;
+$centerThree = $courseAmount == 1 ? true : false;
+wp_enqueue_style('style', '/wp-content/plugins/coursesplugin/assets/style.css', __FILE__);
 if (is_user_logged_in()) {
     $userID = get_current_user_id();
     $membership = $wpdb->get_var("SELECT membership FROM $wpdb->prefix" . "users WHERE ID = $userID");
@@ -37,9 +42,9 @@ if (is_user_logged_in()) {
     if ($valid_until != "0000-00-00" and $membership != "0") {
         if ($date > $valid_until) {
             echo "Ihre Mitgliedschaft ist abgelaufen!\nSie können sie <a href=\"/membership\">hier</a> verlängern.";
-            echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: auto; grid-gap: 10px; grid-auto-rows: minmax(100px, auto);\">";
+            echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat($columnsNeeded, 1fr); column-gap: 1rem; row-gap: 1rem; grid-template-rows: repeat($rowsNeeded, 1fr);\">";
             if (!empty($results)) {
-                $t1 = 1;
+                $t1 = 0;
                 $t2 = 1;
                 foreach ($results as $row) {
                     switch ($row->repeat_every) {
@@ -71,24 +76,34 @@ if (is_user_logged_in()) {
                             $repeatTemp = "Einmalig";
                             break;
                     }
-                    $count++;
-                    if ($count > 5) {
+                    $t1++;
+                    if ($t1 > $columnsNeeded) {
                         $t2++;
+                        $t1 = 1;
                     }
                     $cDate = new DateTime($row->date);
                     $courseDate = $cDate->format('d.m.Y H:i');
+                    $t1 = $centerThree == true ? 2 : $t1;
                     echo "
-                    <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\">
-                    <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
-                    <p>$row->course_name</p>
-                    <p>$courseDate</p>
-                    <p>CHF $row->price</p>
-                    <p>$row->description</p>
+                    <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
+                    <div id=\"course$row->id\" class=\"course-card\">
+                    <a href=\"/course?course=$row->id&product_id=$row->product_id\">
+                    <div class=\"card-body\">
+                    <h5 class=\"card-title text-center\"><b><u>
+                                <p>$row->course_name</p>
+                            </u></b></h5>
+                    <p class=\"card-text\">$row->description</p>
+                    <p><b>Datum:</b> $courseDate</p>
                     <p>$repeatTemp</p>
-                    </a>
+                    <div class=\"text-center\">
+                        <label class=\"control-label\" >
+                            <p>CHF $row->price</p>
+                        </label>
+                    </div>
+                    </div>
+                    </div></a>
                     </div>
                     ";
-                    $t1++;
                 }
                 $table = $wpdb->prefix . 'users';
                 $data = array('membership' => 0);
@@ -98,9 +113,9 @@ if (is_user_logged_in()) {
                 $wpdb->update($table, $data, $where);
             }
         } else {
-            echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: auto; grid-gap: 10px; grid-auto-rows: minmax(100px, auto);\">";
+            echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat($columnsNeeded, 1fr); column-gap: 1rem; row-gap: 1rem; grid-template-rows: repeat($rowsNeeded, 1fr);\">";
             if (!empty($results)) {
-                $t1 = 1;
+                $t1 = 0;
                 $t2 = 1;
                 foreach ($results as $row) {
                     switch ($row->repeat_every) {
@@ -132,30 +147,36 @@ if (is_user_logged_in()) {
                             $repeatTemp = "Einmalig";
                             break;
                     }
-                    $count++;
-                    if ($count > 5) {
+                    $t1++;
+                    if ($t1 > $columnsNeeded) {
                         $t2++;
+                        $t1 = 1;
                     }
                     $cDate = new DateTime($row->date);
                     $courseDate = $cDate->format('d.m.Y H:i');
+                    $t1 = $centerThree == true ? 2 : $t1;
                     echo "
-                    <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\">
-                    <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
-                    <p>$row->course_name</p>
-                    <p>$courseDate</p>
-                    <p>$row->description</p>
+                    <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
+                    <div id=\"course$row->id\" class=\"course-card\">
+                    <a href=\"/course?course=$row->id&product_id=$row->product_id\">
+                <div class=\"card-body\">
+                    <h5 class=\"card-title text-center\"><b><u>
+                                <p>$row->course_name</p>
+                            </u></b></h5>
+                    <p class=\"card-text\">$row->description</p>
+                    <p><b>Datum:</b> $courseDate</p>
                     <p>$repeatTemp</p>
-                    </a>
-                    </div>
+                </div>
+            </div></a>
+        </div>
                     ";
-                    $t1++;
                 }
             }
         }
     } else {
-        echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: auto; grid-gap: 10px; grid-auto-rows: minmax(100px, auto);\">";
+        echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat($columnsNeeded, 1fr); column-gap: 1rem; row-gap: 1rem; grid-template-rows: repeat($rowsNeeded, 1fr);\">";
         if (!empty($results)) {
-            $t1 = 1;
+            $t1 = 0;
             $t2 = 1;
             foreach ($results as $row) {
                 switch ($row->repeat_every) {
@@ -187,31 +208,41 @@ if (is_user_logged_in()) {
                         $repeatTemp = "Einmalig";
                         break;
                 }
-                $count++;
-                if ($count > 5) {
+                $t1++;
+                if ($t1 > $columnsNeeded) {
                     $t2++;
+                    $t1 = 1;
                 }
                 $cDate = new DateTime($row->date);
                 $courseDate = $cDate->format('d.m.Y H:i');
+                $t1 = $centerThree == true ? 2 : $t1;
                 echo "
-                <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\">
-                <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
-                <p>$row->course_name</p>
-                <p>$courseDate</p>
-                <p>CHF $row->price</p>
-                <p>$row->description</p>
-                <p>$repeatTemp</p>
-                </a>
+                <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
+                <div id=\"course$row->id\" class=\"course-card\">
+                <a href=\"/course?course=$row->id&product_id=$row->product_id\">
+                <div class=\"card-body\">
+                    <h5 class=\"card-title text-center\"><b><u>
+                                <p>$row->course_name</p>
+                            </u></b></h5>
+                    <p class=\"card-text\">$row->description</p>
+                    <p><b>Datum:</b> $courseDate</p>
+                    <p>$repeatTemp</p>
+                    <div class=\"text-center\">
+                        <label class=\"control-label\" >
+                            <p>CHF $row->price</p>
+                        </label>
+                    </div>
                 </div>
+            </div></a>
+        </div>
                 ";
-                $t1++;
             }
         }
     }
 } else {
-    echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: auto; grid-gap: 10px; grid-auto-rows: minmax(100px, auto);\">";
+    echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat($columnsNeeded, 1fr); column-gap: 1rem; row-gap: 1rem; grid-template-rows: repeat($rowsNeeded, 1fr);\">";
     if (!empty($results)) {
-        $t1 = 1;
+        $t1 = 0;
         $t2 = 1;
         foreach ($results as $row) {
             switch ($row->repeat_every) {
@@ -243,24 +274,34 @@ if (is_user_logged_in()) {
                     $repeatTemp = "Einmalig";
                     break;
             }
-            $count++;
-            if ($count > 5) {
+            $t1++;
+            if ($t1 > $columnsNeeded) {
                 $t2++;
+                $t1 = 1;
             }
             $cDate = new DateTime($row->date);
             $courseDate = $cDate->format('d.m.Y H:i');
+            $t1 = $centerThree == true ? 2 : $t1;
             echo "
-            <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2;\">
-            <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
-            <p>$row->course_name</p>
-            <p>$courseDate</p>
-            <p>CHF $row->price</p>
-            <p>$row->description</p>
-            <p>$repeatTemp</p>
-            </a>
-            </div>
+            <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
+            <div id=\"course$row->id\" class=\"course-card\">
+            <a href=\"/course?course=$row->id&product_id=$row->product_id\">
+                <div class=\"card-body\">
+                    <h5 class=\"card-title text-center\"><b><u>
+                                <p>$row->course_name</p>
+                            </u></b></h5>
+                    <p class=\"card-text\">$row->description</p>
+                    <p><b>Datum:</b> $courseDate</p>
+                    <p>$repeatTemp</p>
+                    <div class=\"text-center\">
+                        <label class=\"control-label\" >
+                            <p>CHF $row->price</p>
+                        </label>
+                    </div>
+                </div>
+            </div></a>
+        </div>
             ";
-            $t1++;
         }
     }
 }

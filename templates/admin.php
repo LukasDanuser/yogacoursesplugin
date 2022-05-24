@@ -135,7 +135,7 @@ $videos = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseVideos");
 $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 if (!empty($results)) {
-    echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat(auto-fill, minmax(20em, 1fr)); grid-gap: 1rem; grid-auto-rows: repeat(auto-fill, minmax(20em, 1fr));\">";
+    echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat(5, minmax(20em, 1fr)); grid-gap: 1rem; grid-template-rows: repeat(auto-fill, minmax(20em, 1fr));\">";
     $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
     $t1Course = 0;
     $t2Course = 1;
@@ -201,7 +201,7 @@ if (!empty($results)) {
                     </div>
                 </div>
             </div>
-    </div>
+        </div>
         ";
     }
     echo "</div><br>";
@@ -209,11 +209,11 @@ if (!empty($results)) {
 if (!empty($videos)) {
     $t1Video = 0;
     $t2Video = 1;
-    echo "<div class=\"videos\" style=\"display: grid; grid-template-columns: repeat(auto-fill, minmax(20em, 1fr)); grid-gap: 1rem; grid-auto-rows: repeat(auto-fill, minmax(20em, 1fr));\">";
+    echo "<div class=\"videos\" style=\"display: grid; grid-template-columns: repeat(5, minmax(20em, 1fr)); grid-gap: 1rem; grid-template-rows: repeat(auto-fill, minmax(20em, 1fr));\">";
     foreach ($videos as $video) {
         $t1Video++;
         if ($t1Video > 5) {
-            $t2++;
+            $t2Video++;
             $t1Video = 1;
         }
         echo "
