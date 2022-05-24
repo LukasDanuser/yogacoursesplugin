@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 global $wpdb;
+
 $membership = 0;
 $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses ORDER BY date ASC");
 $count = 0;
@@ -33,7 +34,9 @@ $courseAmount = sizeof($results);
 $columnsNeeded = $courseAmount >= 4 ? 4 : 3;
 $columnsNeeded = $courseAmount == 2 ? 2 : $columnsNeeded;
 $centerThree = $courseAmount == 1 ? true : false;
-wp_enqueue_style('style', '/wp-content/plugins/coursesplugin/assets/style.css', __FILE__);
+$plugin_data = get_plugin_data(dirname(__FILE__, 2) . '/coursesplugin/courses-plugin.php');
+$plugin_version = $plugin_data['Version'];
+wp_enqueue_style('style', '/wp-content/plugins/coursesplugin/assets/style.css', __FILE__, $plugin_version);
 if (is_user_logged_in()) {
     $userID = get_current_user_id();
     $membership = $wpdb->get_var("SELECT membership FROM $wpdb->prefix" . "users WHERE ID = $userID");
@@ -87,7 +90,7 @@ if (is_user_logged_in()) {
                     echo "
                     <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
                     <div id=\"course$row->id\" class=\"course-card\">
-                    <a href=\"/course?course=$row->id&product_id=$row->product_id\">
+                    <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
                     <div class=\"card-body\">
                     <h5 class=\"card-title text-center\"><b><u>
                                 <p>$row->course_name</p>
@@ -155,10 +158,20 @@ if (is_user_logged_in()) {
                     $cDate = new DateTime($row->date);
                     $courseDate = $cDate->format('d.m.Y H:i');
                     $t1 = $centerThree == true ? 2 : $t1;
+                    if ($columnsNeeded == 2 || $columnsNeeded == 3) {
+                        if ($t1 == 1) {
+                            echo "<div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important;\">";
+                        } elseif ($t1 == 2 && $columnsNeeded == 2) {
+                            echo "<div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-right: auto !important;\">";
+                        } elseif ($t1 == 3) {
+                            echo "<div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-right: auto !important;\">";
+                        } else {
+                            echo "<div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">";
+                        }
+                    }
                     echo "
-                    <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
                     <div id=\"course$row->id\" class=\"course-card\">
-                    <a href=\"/course?course=$row->id&product_id=$row->product_id\">
+                    <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
                 <div class=\"card-body\">
                     <h5 class=\"card-title text-center\"><b><u>
                                 <p>$row->course_name</p>
@@ -219,7 +232,7 @@ if (is_user_logged_in()) {
                 echo "
                 <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
                 <div id=\"course$row->id\" class=\"course-card\">
-                <a href=\"/course?course=$row->id&product_id=$row->product_id\">
+                <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
                 <div class=\"card-body\">
                     <h5 class=\"card-title text-center\"><b><u>
                                 <p>$row->course_name</p>
@@ -285,7 +298,7 @@ if (is_user_logged_in()) {
             echo "
             <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
             <div id=\"course$row->id\" class=\"course-card\">
-            <a href=\"/course?course=$row->id&product_id=$row->product_id\">
+            <a href=\"/course?course=$row->id&product_id=$row->product_id\" style=\"text-decoration:none;\">
                 <div class=\"card-body\">
                     <h5 class=\"card-title text-center\"><b><u>
                                 <p>$row->course_name</p>

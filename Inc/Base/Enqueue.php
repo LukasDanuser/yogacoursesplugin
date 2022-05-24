@@ -37,8 +37,10 @@ class Enqueue extends BaseController
     }
     function enqueue()
     {
+        $plugin_data = get_plugin_data(dirname(__FILE__, 3) . '/courses-plugin.php');
+        $plugin_version = $plugin_data['Version'];
         // enqueue all scripts
-        wp_enqueue_style('style', '/wp-content/plugins/coursesplugin/assets/style.css', __FILE__);
-        wp_enqueue_script('coursesscript', '/wp-content/plugins/coursesplugin/assets/courses.js', __FILE__);
+        wp_enqueue_style('style', '/wp-content/plugins/coursesplugin/assets/style.css', __FILE__, $plugin_version);
+        wp_enqueue_script('coursesscript', '/wp-content/plugins/coursesplugin/assets/courses.js', __FILE__, $plugin_version);
     }
 }
