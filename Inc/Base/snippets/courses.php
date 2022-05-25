@@ -168,6 +168,8 @@ if (is_user_logged_in()) {
                         } else {
                             echo "<div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">";
                         }
+                    } else {
+                        echo "<div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">";
                     }
                     echo "
                     <div id=\"course$row->id\" class=\"course-card\">
