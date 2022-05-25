@@ -95,12 +95,10 @@ if ($deleteVid == "deleteVid") {
             }
                 ?>
 <form method="post">
-    <label for="course_name">Name</label>
-    <input type="text" name="course_name" id="course_name" required><br><br>
-    <label for="price">Preis</label>
-    <input type="number" name="price" id="price" required><br><br>
+    <input type="text" name="course_name" id="course_name" placeholder="Kurs Name" required><br><br>
+    <input type="number" name="price" id="price" placeholder="Preis" required><br><br>
     <label for="date">Datum</label>
-    <input type="datetime-local" name="date" id="date" required><br><br>
+    <input type="datetime-local" name="date" id="date" placeholder="Datum" required><br><br>
     <label for="repeat">Wiederholen</label>
     <select name="repeat" id="repeat" required>
         <option value="day">Täglich</option>
@@ -113,11 +111,9 @@ if ($deleteVid == "deleteVid") {
         <option value="6month">Alle 6 Monate</option>
         <option value="never">Nie</option>
     </select><br><br>
-    <label for="description">Beschreibung</label>
-    <input type="text" name="description" id="description" required><br><br>
-    <label for="link">Link</label>
-    <input type="text" name="link" id="link" required><br><br>
-    <input type="submit" name="submit" value="submit">
+    <input type="text" name="description" id="description" placeholder="Beschreibung" required><br><br>
+    <input type="text" name="link" id="link" placeholder="Link" required><br><br>
+    <input type="submit" name="submit" value="Speichern">
 </form>
 <form action="admin.php?page=upload_file" method="post" enctype="multipart/form-data">
     <label for="file"><span>Filename:</span></label>
@@ -127,7 +123,7 @@ if ($deleteVid == "deleteVid") {
     <label for="vidDes"></label>
     <input type="text" name="vidDes" id="vidDes" placeholder="Beschreibung" required>
     <br /><br>
-    <input type="submit" name="submit" value="Submit" />
+    <input type="submit" name="submit" value="Speichern" />
 </form>
 <?php
 $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses ORDER BY date ASC");
