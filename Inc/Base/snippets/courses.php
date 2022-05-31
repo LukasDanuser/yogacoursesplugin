@@ -28,7 +28,6 @@ $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses ORDER BY 
 $count = 0;
 $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
-$repeatTemp = "";
 $rowsNeeded = ceil(sizeof($results) / 4);
 $courseAmount = sizeof($results);
 $columnsNeeded = $courseAmount >= 4 ? 4 : 3;
@@ -50,35 +49,6 @@ if (is_user_logged_in()) {
                 $t1 = 0;
                 $t2 = 1;
                 foreach ($results as $row) {
-                    switch ($row->repeat_every) {
-                        case "day":
-                            $repeatTemp = "Täglich";
-                            break;
-                        case "week":
-                            $repeatTemp = "Wöchentlich";
-                            break;
-                        case "month":
-                            $repeatTemp = "Monatlich";
-                            break;
-                        case "2month":
-                            $repeatTemp = "Alle 2 Monate";
-                            break;
-                        case "3month":
-                            $repeatTemp = "Alle 3 Monate";
-                            break;
-                        case "4month":
-                            $repeatTemp = "Alle 4 Monate";
-                            break;
-                        case "5month":
-                            $repeatTemp = "Alle 5 Monate";
-                            break;
-                        case "6month":
-                            $repeatTemp = "Alle 6 Monate";
-                            break;
-                        case "never":
-                            $repeatTemp = "Einmalig";
-                            break;
-                    }
                     $t1++;
                     if ($t1 > $columnsNeeded) {
                         $t2++;
@@ -97,7 +67,6 @@ if (is_user_logged_in()) {
                             </u></b></h5>
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Datum:</b> $courseDate</p>
-                    <p>$repeatTemp</p>
                     <div class=\"text-center\">
                         <label class=\"control-label\" >
                             <p>CHF $row->price</p>
@@ -121,35 +90,7 @@ if (is_user_logged_in()) {
                 $t1 = 0;
                 $t2 = 1;
                 foreach ($results as $row) {
-                    switch ($row->repeat_every) {
-                        case "day":
-                            $repeatTemp = "Täglich";
-                            break;
-                        case "week":
-                            $repeatTemp = "Wöchentlich";
-                            break;
-                        case "month":
-                            $repeatTemp = "Monatlich";
-                            break;
-                        case "2month":
-                            $repeatTemp = "Alle 2 Monate";
-                            break;
-                        case "3month":
-                            $repeatTemp = "Alle 3 Monate";
-                            break;
-                        case "4month":
-                            $repeatTemp = "Alle 4 Monate";
-                            break;
-                        case "5month":
-                            $repeatTemp = "Alle 5 Monate";
-                            break;
-                        case "6month":
-                            $repeatTemp = "Alle 6 Monate";
-                            break;
-                        case "never":
-                            $repeatTemp = "Einmalig";
-                            break;
-                    }
+
                     $t1++;
                     if ($t1 > $columnsNeeded) {
                         $t2++;
@@ -180,7 +121,6 @@ if (is_user_logged_in()) {
                             </u></b></h5>
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Datum:</b> $courseDate</p>
-                    <p>$repeatTemp</p>
                 </div>
             </div></a>
         </div>
@@ -194,35 +134,6 @@ if (is_user_logged_in()) {
             $t1 = 0;
             $t2 = 1;
             foreach ($results as $row) {
-                switch ($row->repeat_every) {
-                    case "day":
-                        $repeatTemp = "Täglich";
-                        break;
-                    case "week":
-                        $repeatTemp = "Wöchentlich";
-                        break;
-                    case "month":
-                        $repeatTemp = "Monatlich";
-                        break;
-                    case "2month":
-                        $repeatTemp = "Alle 2 Monate";
-                        break;
-                    case "3month":
-                        $repeatTemp = "Alle 3 Monate";
-                        break;
-                    case "4month":
-                        $repeatTemp = "Alle 4 Monate";
-                        break;
-                    case "5month":
-                        $repeatTemp = "Alle 5 Monate";
-                        break;
-                    case "6month":
-                        $repeatTemp = "Alle 6 Monate";
-                        break;
-                    case "never":
-                        $repeatTemp = "Einmalig";
-                        break;
-                }
                 $t1++;
                 if ($t1 > $columnsNeeded) {
                     $t2++;
@@ -241,7 +152,6 @@ if (is_user_logged_in()) {
                             </u></b></h5>
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Datum:</b> $courseDate</p>
-                    <p>$repeatTemp</p>
                     <div class=\"text-center\">
                         <label class=\"control-label\" >
                             <p>CHF $row->price</p>
@@ -260,35 +170,6 @@ if (is_user_logged_in()) {
         $t1 = 0;
         $t2 = 1;
         foreach ($results as $row) {
-            switch ($row->repeat_every) {
-                case "day":
-                    $repeatTemp = "Täglich";
-                    break;
-                case "week":
-                    $repeatTemp = "Wöchentlich";
-                    break;
-                case "month":
-                    $repeatTemp = "Monatlich";
-                    break;
-                case "2month":
-                    $repeatTemp = "Alle 2 Monate";
-                    break;
-                case "3month":
-                    $repeatTemp = "Alle 3 Monate";
-                    break;
-                case "4month":
-                    $repeatTemp = "Alle 4 Monate";
-                    break;
-                case "5month":
-                    $repeatTemp = "Alle 5 Monate";
-                    break;
-                case "6month":
-                    $repeatTemp = "Alle 6 Monate";
-                    break;
-                case "never":
-                    $repeatTemp = "Einmalig";
-                    break;
-            }
             $t1++;
             if ($t1 > $columnsNeeded) {
                 $t2++;
@@ -307,7 +188,6 @@ if (is_user_logged_in()) {
                             </u></b></h5>
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Datum:</b> $courseDate</p>
-                    <p>$repeatTemp</p>
                     <div class=\"text-center\">
                         <label class=\"control-label\" >
                             <p>CHF $row->price</p>
