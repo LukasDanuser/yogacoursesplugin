@@ -31,6 +31,13 @@ $repeat = isset($_POST['repeat']) ? $_POST['repeat'] : "";
 $submit = isset($_REQUEST['submit']) ? "submitted" : "";
 $delete = isset($_REQUEST['delete']) ? "delete" : "";
 $deleteVid = isset($_REQUEST['deleteVid']) ? 'deleteVid' : "";
+$editCourse = isset($_REQUEST['edit']) ? $_REQUEST['edit'] : "";
+$course_nameValue = "";
+$priceValue = "";
+$descriptionValue = "";
+$linkValue = "";
+$dateValue = "";
+$repeatValue = "";
 global $wpdb;
 
 
@@ -50,6 +57,48 @@ function createProduct($title, $body, $price, $sku)
 
     return $post_id;
 }
+
+if ($editCourse != "" || $editCourse != null) {
+    $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses WHERE id = $editCourse");
+    foreach ($results as $result) {
+        switch ($result->repeat_every) {
+            case "day":
+                $repeatTemp = "Täglich";
+                break;
+            case "week":
+                $repeatTemp = "Wöchentlich";
+                break;
+            case "month":
+                $repeatTemp = "Monatlich";
+                break;
+            case "2month":
+                $repeatTemp = "Alle 2 Monate";
+                break;
+            case "3month":
+                $repeatTemp = "Alle 3 Monate";
+                break;
+            case "4month":
+                $repeatTemp = "Alle 4 Monate";
+                break;
+            case "5month":
+                $repeatTemp = "Alle 5 Monate";
+                break;
+            case "6month":
+                $repeatTemp = "Alle 6 Monate";
+                break;
+            case "never":
+                $repeatTemp = "Nie";
+                break;
+        }
+        $course_nameValue = $result->course_name;
+        $priceValue = $result->price;
+        $descriptionValue = $result->description;
+        $linkValue = $result->url;
+        $dateValue = $result->date;
+        $repeatValue = $result->repeat_every;
+    }
+}
+
 if ($deleteVid == "deleteVid") {
     $id = isset($_REQUEST['deleteVid']) ? $_REQUEST['deleteVid'] : 0;
     $video = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courseVideos" . " WHERE id = $id");
@@ -78,29 +127,55 @@ if ($deleteVid == "deleteVid") {
             }
 
             if ($submit == "submitted") {
-                $product_id = createProduct($course_name, $description, $price, null);
-                $table_name = "$wpdb->prefix" . "courses";
-                $wpdb->insert(
-                    $table_name,
-                    array(
+                if ($editCourse != "" || $editCourse != null) {
+                    $table = $wpdb->prefix . 'courses';
+                    $data = array(
                         'course_name' => $course_name,
                         'price' => $price,
                         'date' => $date,
                         'repeat_every' => $repeat,
                         'description' => $description,
-                        'url' => $link,
-                        'product_id' => $product_id
-                    )
-                );
+                        'url' => $link
+                    );
+                    $where = array('id' => $editCourse);
+                    $wpdb->update($table, $data, $where);
+                    $_POST = array();
+                ?><script>
+            window.location.href = "/wp-admin/admin.php?page=courses_plugin";
+        </script><?php
+                } else {
+                    $product_id = createProduct($course_name, $description, $price, null);
+                    $table_name = "$wpdb->prefix" . "courses";
+                    $wpdb->insert(
+                        $table_name,
+                        array(
+                            'course_name' => $course_name,
+                            'price' => $price,
+                            'date' => $date,
+                            'repeat_every' => $repeat,
+                            'description' => $description,
+                            'url' => $link,
+                            'product_id' => $product_id
+                        )
+                    );
+                    $_POST = array();
+                }
             }
-                ?>
+                    ?>
 <form method="post">
-    <input type="text" name="course_name" id="course_name" placeholder="Kurs Name" required><br><br>
-    <input type="number" name="price" id="price" placeholder="Preis" required><br><br>
+    <input type="text" name="course_name" id="course_name" placeholder="Kurs Name" value="<?php echo $course_nameValue; ?>" required><br><br>
+    <input type="number" name="price" id="price" placeholder="Preis" value="<?php echo $priceValue; ?>" required><br><br>
     <label for="date">Datum</label>
-    <input type="datetime-local" name="date" id="date" placeholder="Datum" required><br><br>
+    <input type="datetime-local" name="date" id="date" placeholder="Datum" value="<?php echo $dateValue; ?>" required><br><br>
     <label for="repeat">Wiederholen</label>
     <select name="repeat" id="repeat" required>
+        <?php
+
+        if ($repeatValue != "" || $repeatValue != null) {
+            echo '<option value="' . $repeatValue . '" selected>' . $repeatTemp . '</option>';
+        }
+
+        ?>
         <option value="day">Täglich</option>
         <option value="week">Wöchentlich</option>
         <option value="month">Monatlich</option>
@@ -111,8 +186,8 @@ if ($deleteVid == "deleteVid") {
         <option value="6month">Alle 6 Monate</option>
         <option value="never">Nie</option>
     </select><br><br>
-    <input type="text" name="description" id="description" placeholder="Beschreibung" required><br><br>
-    <input type="text" name="link" id="link" placeholder="Link" required><br><br>
+    <input type="text" name="description" id="description" placeholder="Beschreibung" value="<?php echo $descriptionValue; ?>" required><br><br>
+    <input type="text" name="link" id="link" placeholder="Link" value="<?php echo $linkValue; ?>" required><br><br>
     <input type="submit" name="submit" value="Speichern">
 </form>
 <form action="admin.php?page=upload_file" method="post" enctype="multipart/form-data">
@@ -125,6 +200,7 @@ if ($deleteVid == "deleteVid") {
     <br /><br>
     <input type="submit" name="submit" value="Speichern" />
 </form>
+
 <?php
 $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses ORDER BY date ASC");
 $videos = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseVideos");
@@ -192,8 +268,9 @@ if (!empty($results)) {
                             <p>CHF $row->price</p>
                         </label>
                     </div>
-                    <div class=\" Löschen text-center\">
+                    <div class=\"buttons text-center\">
                         <button onclick=\"window.location.href='$actual_link&delete=$row->id';\">Löschen</button>
+                        <button onclick=\"window.location.href='$actual_link&edit=$row->id';\">Bearbeiten</button>
                     </div>
                 </div>
             </div>
@@ -224,7 +301,7 @@ if (!empty($videos)) {
         <source src=\"$video->file_url\" type=\"video/mp4\">
         Your browser does not support the video tag.
         </video> <br><br>
-              <div class=\" Löschen text-center\">
+              <div class=\"Löschen text-center\">
                   <button onclick=\"window.location.href='$actual_link&deleteVid=$video->id';\">Löschen</button>
               </div>
           </div>
