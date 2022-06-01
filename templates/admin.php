@@ -291,7 +291,7 @@ if (!empty($videos)) {
         }
         echo "
       <div class=\"video\" style=\"grid-column: $t1Video; grid-row: $t2Video;\">
-      <div id=\"video$row->id\" class=\"video-card\">
+      <div id=\"video$video->id\" class=\"video-card\">
           <div class=\"video-body\">
               <h5 class=\"video-title text-center\"><b><u>
                           <p>$video->video_name</p>
