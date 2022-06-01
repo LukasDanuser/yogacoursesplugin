@@ -52,7 +52,7 @@ class PageCreator extends BaseController
             'Thanks',
             'Verify',
             'deleteExpCourse',
-            'videos'
+            'Videos'
         ];
 
         foreach ($page_paths as $page_path) {
