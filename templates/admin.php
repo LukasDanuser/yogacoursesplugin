@@ -22,16 +22,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 
-$course_name = isset($_REQUEST['course_name']) ? $_REQUEST['course_name'] : "";
-$price = isset($_REQUEST['price']) ? $_REQUEST['price'] : "";
-$description = isset($_REQUEST['description']) ? $_REQUEST['description'] : "";
-$link = isset($_REQUEST['link']) ? $_REQUEST['link'] : "";
-$date = isset($_REQUEST['date']) ? $_REQUEST['date'] : "";
-$repeat = isset($_POST['repeat']) ? $_POST['repeat'] : "";
+$course_name = isset($_REQUEST['course_name']) ? htmlspecialchars($_REQUEST['course_name']) : "";
+$price = isset($_REQUEST['price']) ? htmlspecialchars($_REQUEST['price']) : "";
+$description = isset($_REQUEST['description']) ? htmlspecialchars($_REQUEST['description']) : "";
+$link = isset($_REQUEST['link']) ? htmlspecialchars($_REQUEST['link']) : "";
+$date = isset($_REQUEST['date']) ? htmlspecialchars($_REQUEST['date']) : "";
+$repeat = isset($_POST['repeat']) ? htmlspecialchars($_POST['repeat']) : "";
 $submit = isset($_REQUEST['submit']) ? "submitted" : "";
 $delete = isset($_REQUEST['delete']) ? "delete" : "";
 $deleteVid = isset($_REQUEST['deleteVid']) ? 'deleteVid' : "";
-$editCourse = isset($_REQUEST['edit']) ? $_REQUEST['edit'] : "";
+$editCourse = isset($_REQUEST['edit']) ? htmlspecialchars($_REQUEST['edit']) : "";
 $course_nameValue = "";
 $priceValue = "";
 $descriptionValue = "";
@@ -100,7 +100,7 @@ if ($editCourse != "" || $editCourse != null) {
 }
 
 if ($deleteVid == "deleteVid") {
-    $id = isset($_REQUEST['deleteVid']) ? $_REQUEST['deleteVid'] : 0;
+    $id = isset($_REQUEST['deleteVid']) ? htmlspecialchars($_REQUEST['deleteVid']) : 0;
     $video = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courseVideos" . " WHERE id = $id");
     $table = "$wpdb->prefix" . "courseVideos";
     wp_delete_file($video->file_path);
@@ -112,7 +112,7 @@ if ($deleteVid == "deleteVid") {
             if ($delete == "delete") {
 
 
-                $id = isset($_REQUEST['delete']) ? $_REQUEST['delete'] : 0;
+                $id = isset($_REQUEST['delete']) ? htmlspecialchars($_REQUEST['delete']) : 0;
                 $result = $wpdb->get_var("SELECT product_id FROM $wpdb->prefix" . "courses WHERE id = $id");
                 $table = "$wpdb->prefix" . "wc_product_meta_lookup";
                 $wpdb->delete($table, array('product_id' => $result));
