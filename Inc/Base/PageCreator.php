@@ -40,8 +40,6 @@ class PageCreator extends BaseController
             'addtocart',
             'Courses',
             'Course',
-            'Expired',
-            'Failure',
             'Membership',
             'Thanks'
         ];
@@ -49,8 +47,6 @@ class PageCreator extends BaseController
             'addtocart',
             'Courses',
             'Course',
-            'Expired',
-            'Failure',
             'Membership',
             'Thanks',
             'Verify',
@@ -90,14 +86,8 @@ class PageCreator extends BaseController
             case "Thanks":
                 $content = '[xyz-ips snippet="Thanks"]';
                 break;
-            case "Expired":
-                $content = '[xyz-ips snippet="Expired"]';
-                break;
             case "addtocart":
                 $content = '[xyz-ips snippet="addtocart"]';
-                break;
-            case "Failure":
-                $content = '[xyz-ips snippet="Failure"]';
                 break;
             case "Course":
                 $content = '[xyz-ips snippet="Course"]';
