@@ -78,29 +78,36 @@ class PageCreator extends BaseController
     }
     function create_page($name)
     {
+        $title = "";
         switch ($name) {
             case "Membership":
                 $content = '[xyz-ips snippet="Membership"]';
+                $title = "Mitgliedschaft";
                 break;
             case "Courses":
                 $content = '[xyz-ips snippet="Courses"] [xyz-ips snippet="deleteExpCourse"]';
+                $title = "Kurse";
                 break;
             case "Thanks":
                 $content = '[xyz-ips snippet="Thanks"]';
+                $title = "Danke";
                 break;
             case "addtocart":
                 $content = '[xyz-ips snippet="addtocart"]';
+                $title = "addtocart";
                 break;
             case "Course":
                 $content = '[xyz-ips snippet="Course"]';
+                $title = "Kurs";
                 break;
             case "Videos":
                 $content = '[xyz-ips snippet="Videos"]';
+                $title = "Videos";
                 break;
         }
         $page = [
-            'post_title'  => __($name),
-            'post_name' => '',
+            'post_title'  => __($title),
+            'post_name' => $name,
             'post_status' => 'publish',
             'post_content' => $content,
             'post_author' => 1,
