@@ -34,7 +34,7 @@ if (is_user_logged_in()) {
     if ($valid_until != "0000-00-00" and $membership != "0") {
         if ($date > $valid_until) {
             echo "<div class=\"accessDenied\" style=\"text-align: center;\">";
-            echo "Diese Seite ist nur für Mitglieder zugänglich!\nSie können <a href=\"/membership\">hier</a> eine Mitgliedschaft kaufen.";
+            echo "<p style=\"border: 1px solid orange;max-width: fit-content;padding: 0.3rem;margin: auto;border-radius: 0.2rem;\">Diese Seite ist nur für Mitglieder zugänglich!<br>Sie können <a href=\"/membership\">hier</a> eine Mitgliedschaft kaufen.</p>";
             echo "</div>";
         } else {
             $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -80,7 +80,7 @@ if (is_user_logged_in()) {
         }
     } else {
         echo "<div class=\"accessDenied\" style=\"text-align: center;\">";
-        echo "Diese Seite ist nur für Mitglieder zugänglich!\nSie können <a href=\"/membership\">hier</a> eine Mitgliedschaft kaufen.";
+        echo "<p style=\"border: 1px solid orange;max-width: fit-content;padding: 0.3rem;margin: auto;border-radius: 0.2rem;\">Diese Seite ist nur für Mitglieder zugänglich!<br>Sie können <a href=\"/membership\">hier</a> eine Mitgliedschaft kaufen.</p>";
         echo "</div>";
     }
 }
