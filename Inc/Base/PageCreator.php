@@ -41,7 +41,8 @@ class PageCreator extends BaseController
             'Courses',
             'Course',
             'Membership',
-            'Thanks'
+            'Thanks',
+            'Videos'
         ];
         $snippets = [
             'addtocart',
@@ -50,7 +51,8 @@ class PageCreator extends BaseController
             'Membership',
             'Thanks',
             'Verify',
-            'deleteExpCourse'
+            'deleteExpCourse',
+            'videos'
         ];
 
         foreach ($page_paths as $page_path) {
@@ -91,6 +93,9 @@ class PageCreator extends BaseController
                 break;
             case "Course":
                 $content = '[xyz-ips snippet="Course"]';
+                break;
+            case "Videos":
+                $content = '[xyz-ips snippet="Videos"]';
                 break;
         }
         $page = [
