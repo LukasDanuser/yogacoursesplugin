@@ -55,6 +55,10 @@ class PageCreator extends BaseController
             'Videos'
         ];
 
+        foreach ($snippets as $snippet) {
+            global $wpdb;
+            $this->createSnippets($snippet);
+        }
         foreach ($page_paths as $page_path) {
 
             $page = get_page_by_path($page_path);
@@ -62,11 +66,6 @@ class PageCreator extends BaseController
             if (!$page) {
                 $this->create_page($page_path);
             }
-        }
-        foreach ($snippets as $snippet) {
-            global $wpdb;
-            $this->createShortcode($snippet);
-            $this->createSnippets($snippet);
         }
         global $wpdb;
         $this->create_table();
@@ -82,53 +81,29 @@ class PageCreator extends BaseController
         $title = "";
         switch ($name) {
             case "Membership":
-                $content = '[cpl_membership]';
+                $content = '[xyz-ips snippet="Membership"]';
                 $title = "Mitgliedschaft";
                 break;
             case "Courses":
-                $content = '[cpl_courses] [cpl_deleteExpCourse]';
+                $content = '[xyz-ips snippet="Courses"] [xyz-ips snippet="deleteExpCourse"]';
                 $title = "Kurse";
                 break;
             case "Thanks":
-                $content = '[cpl_thanks]';
+                $content = '[xyz-ips snippet="Thanks"]';
                 $title = "Danke";
                 break;
             case "addtocart":
-                $content = '[cpl_addtocart]';
+                $content = '[xyz-ips snippet="addtocart"]';
                 $title = "addtocart";
                 break;
             case "Course":
-                $content = '[cpl_course]';
+                $content = '[xyz-ips snippet="Course"]';
                 $title = "Kurs";
                 break;
             case "Videos":
-                $content = '[cpl_videos]';
+                $content = '[xyz-ips snippet="Videos"]';
                 $title = "Videos";
                 break;
-                // case "Membership":
-                //     $content = '[xyz-ips snippet="Membership"]';
-                //     $title = "Mitgliedschaft";
-                //     break;
-                // case "Courses":
-                //     $content = '[xyz-ips snippet="Courses"] [xyz-ips snippet="deleteExpCourse"]';
-                //     $title = "Kurse";
-                //     break;
-                // case "Thanks":
-                //     $content = '[xyz-ips snippet="Thanks"]';
-                //     $title = "Danke";
-                //     break;
-                // case "addtocart":
-                //     $content = '[xyz-ips snippet="addtocart"]';
-                //     $title = "addtocart";
-                //     break;
-                // case "Course":
-                //     $content = '[xyz-ips snippet="Course"]';
-                //     $title = "Kurs";
-                //     break;
-                // case "Videos":
-                //     $content = '[xyz-ips snippet="Videos"]';
-                //     $title = "Videos";
-                //     break;
         }
         $page = [
             'post_title'  => __($title),
@@ -188,12 +163,6 @@ class PageCreator extends BaseController
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             $wpdb->query($sql);
         }
-    }
-
-    function createShortcode($name)
-    {
-        $content = file_get_contents('snippets/' . strtolower($name) . '.php', "r");
-        add_shortcode('cpl_' . strtolower($name), $content);
     }
 
     function createSnippets($name)
