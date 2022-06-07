@@ -22,6 +22,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 global $wpdb;
+session_start();
+$_SESSION['mailSent'] = false;
 
 $membership = 0;
 $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses ORDER BY date ASC");
