@@ -29,15 +29,22 @@ $price = $course[0]->price;
 $description = $course[0]->description;
 $product_id = $course[0]->product_id;
 $courseDate = $cDate->format('d.m.Y H:i');
+$registered_emails = $wpdb->get_var("SELECT registered_emails FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
 if (is_user_logged_in()) {
+    if (str_contains($registered_emails, ";" . wp_get_current_user()->user_email . ';')) {
+        $alreadyRegistered = true;
+    }
     $userID = get_current_user_id();
     $membership = $wpdb->get_var("SELECT membership FROM $wpdb->prefix" . "users WHERE ID = $userID");
     $valid_until = $wpdb->get_var("SELECT subscription_valid_until FROM $wpdb->prefix" . "users WHERE ID = $userID");
     $date = date("Y-m-d");
     echo "<div class=\"course\">";
-    if ($valid_until != "0000-00-00" and $membership != "0") {
-        if ($date > $valid_until) {
-            echo "
+    if ($alreadyRegistered == true) {
+        echo "<h1>Sie sind bereits angemeldet für diesen Kurs.</h1>";
+    } else {
+        if ($valid_until != "0000-00-00" and $membership != "0") {
+            if ($date > $valid_until) {
+                echo "
                     <a href=\"/addtocart?id=$product_id&href=checkout\" style=\"text-decoration:none;\">
                     <p>$name</p>
                     <p>$courseDate</p>
@@ -45,17 +52,17 @@ if (is_user_logged_in()) {
                     <p>$description</p>
                     </a>
                     ";
-        } else {
-            echo "
+            } else {
+                echo "
                     <a href=\"/thanks?id=$product_id\" style=\"text-decoration:none;\">
                     <p>$name</p>
                     <p>$courseDate</p>
                     <p>$description</p>
                     </a>
                     ";
-        }
-    } else {
-        echo "
+            }
+        } else {
+            echo "
                     <a href=\"/addtocart?id=$product_id&href=checkout\" style=\"text-decoration:none;\">
                     <p>$name</p>
                     <p>$courseDate</p>
@@ -63,6 +70,7 @@ if (is_user_logged_in()) {
                     <p>$description</p>
                     </a>
                     ";
+        }
     }
 } else {
     echo "
