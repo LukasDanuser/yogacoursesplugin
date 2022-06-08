@@ -29,7 +29,8 @@ $price = $course[0]->price;
 $description = $course[0]->description;
 $product_id = $course[0]->product_id;
 $courseDate = $cDate->format('d.m.Y H:i');
-$registered_emails = $wpdb->get_var("SELECT registered_emails FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
+$registered_emails = $wpdb->get_var("SELECT registered_emails FROM $wpdb->prefix" . "courses WHERE product_id = $product_id");
+$alreadyRegistered = false;
 if (is_user_logged_in()) {
     if (str_contains($registered_emails, ";" . wp_get_current_user()->user_email . ';')) {
         $alreadyRegistered = true;
@@ -40,7 +41,7 @@ if (is_user_logged_in()) {
     $date = date("Y-m-d");
     echo "<div class=\"course\">";
     if ($alreadyRegistered == true) {
-        echo "<h1>Sie sind bereits angemeldet für diesen Kurs.</h1>";
+        echo "<p>Sie sind bereits angemeldet für diesen Kurs.</p>";
     } else {
         if ($valid_until != "0000-00-00" and $membership != "0") {
             if ($date > $valid_until) {
@@ -82,4 +83,4 @@ if (is_user_logged_in()) {
     </a>
     ";
 }
-echo "\n<a href=\"/addtocart?id=$product_id&href=checkout\" style=\"text-decoration:none;\">buy</a></div>";
+echo "</div>";
