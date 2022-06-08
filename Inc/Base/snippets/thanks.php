@@ -28,11 +28,14 @@ $productID = isset($_GET['id']) ? $_GET['id'] : 0;
 $courseInfo = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courses WHERE product_id = $productID;");
 $thanksMessage = "Vielen Dank für Ihren Einkauf bei uns!";
 $alreadyRegistered = false;
+$registered_emails = $wpdb->get_var("SELECT registered_emails FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
+
 if (is_user_logged_in()) {
 
     $userID = get_current_user_id();
     $registered_courses = $wpdb->get_var("SELECT registered_courses FROM $wpdb->prefix" . "users WHERE ID = $userID");
-    if (str_contains($registered_courses, ";" . $courseInfo->id . ';')) {
+
+    if (str_contains($registered_courses, ";" . $courseInfo->id . ';') or str_contains($registered_emails, ";" . $userID . ';')) {
         if ($_SESSION['mailSent'] == false) {
             $thanksMessage = "Sie sind bereits angemeldet für diesen Kurs.";
             $alreadyRegistered = true;
@@ -81,6 +84,19 @@ if (is_user_logged_in()) {
                             $table = $wpdb->prefix . 'users';
                             $data = array('registered_courses' => $newRegisteredCourses);
                             $where = array('ID' => $userID);
+                            $wpdb->update($table, $data, $where);
+                            $registrations = $wpdb->get_var("SELECT registrations FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
+                            $table = $wpdb->prefix . 'courses';
+                            $data = array('registrations' => $registrations + 1);
+                            $where = array('product_id' => $productID);
+                            $wpdb->update($table, $data, $where);
+                            $newRegisteredEmails = "";
+                            if ($registered_emails == '' or $registered_emails == null or $registered_emails == ' ') {
+                                $newRegisteredEmails = ';' . $to . ';';
+                            } else {
+                                $newRegisteredEmails = $registered_emails . $to . ';';
+                            }
+                            $data = array('registered_emails' => $newRegisteredEmails);
                             $wpdb->update($table, $data, $where);
                             echo "<div style=\"text-align:center;\">$thanksMessage</div>";
                             $_SESSION['mailSent'] = true;

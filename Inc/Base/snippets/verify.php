@@ -42,45 +42,66 @@ if (isset($_GET['order_id'])) {
     $membership = 0;
     $membershipStr = "";
     $valid_until_new = "0000-00-00";
-    $userID = get_current_user_id();
     $order = (int)$wpdb->get_var("SELECT product_id FROM $wpdb->prefix" . "wc_order_product_lookup WHERE order_id = $order_id");
-    $valid_until = $wpdb->get_var("SELECT subscription_valid_until FROM $wpdb->prefix" . "users WHERE ID = $userID");
     $order_status = $wpdb->get_var("SELECT verified FROM $wpdb->prefix" . "wc_order_product_lookup WHERE order_id = $order_id");
     $date = date("Y-m-d");
     if ($order_id != 0) {
         if ((int)$order_status != 1) {
-            if ($order == $gold or $order == $silver) {
-                if ($order == $silver) {
-                    $membership = 1;
-                    $membershipStr = "Silber";
-                    if ($valid_until > $date) {
-                        $valid_until_new = date('Y-m-d', strtotime($valid_until . ' + 6 months'));
-                    } elseif ($valid_until < $date) {
-                        $valid_until_new = date('Y-m-d', strtotime($date . ' + 6 months'));
+            if (is_user_logged_in()) {
+                $userID = get_current_user_id();
+                $valid_until = $wpdb->get_var("SELECT subscription_valid_until FROM $wpdb->prefix" . "users WHERE ID = $userID");
+                if ($order == $gold or $order == $silver) {
+                    if ($order == $silver) {
+                        $membership = 1;
+                        $membershipStr = "Silber";
+                        if ($valid_until > $date) {
+                            $valid_until_new = date('Y-m-d', strtotime($valid_until . ' + 6 months'));
+                        } elseif ($valid_until < $date) {
+                            $valid_until_new = date('Y-m-d', strtotime($date . ' + 6 months'));
+                        }
+                    } elseif ($order == $gold) {
+                        $membership = 2;
+                        $membershipStr = "Gold";
+                        if ($valid_until > $date) {
+                            $valid_until_new = date('Y-m-d', strtotime($valid_until . ' + 1 years'));
+                        } elseif ($valid_until < $date) {
+                            $valid_until_new = date('Y-m-d', strtotime($date . ' + 1 years'));
+                        }
                     }
-                } elseif ($order == $gold) {
-                    $membership = 2;
-                    $membershipStr = "Gold";
-                    if ($valid_until > $date) {
-                        $valid_until_new = date('Y-m-d', strtotime($valid_until . ' + 1 years'));
-                    } elseif ($valid_until < $date) {
-                        $valid_until_new = date('Y-m-d', strtotime($date . ' + 1 years'));
+
+                    if ($order == $silver or $order == $gold) {
+                        $table = $wpdb->prefix . 'users';
+                        $data = array('membership' => $membership);
+                        $where = array('ID' => $userID);
+                        $wpdb->update($table, $data, $where);
+                        $data = array('subscription_valid_until' => $valid_until_new);
+                        $wpdb->update($table, $data, $where);
+
+                        $table = $wpdb->prefix . 'wc_order_product_lookup';
+                        $data = array('verified' => '1');
+                        $where = array('order_id' => $order_id);
+                        $wpdb->update($table, $data, $where);
                     }
                 }
-
-                if ($order == $silver or $order == $gold) {
-                    $table = $wpdb->prefix . 'users';
-                    $data = array('membership' => $membership);
-                    $where = array('ID' => $userID);
-                    $wpdb->update($table, $data, $where);
-                    $data = array('subscription_valid_until' => $valid_until_new);
-                    $wpdb->update($table, $data, $where);
-
-                    $table = $wpdb->prefix . 'wc_order_product_lookup';
-                    $data = array('verified' => '1');
-                    $where = array('order_id' => $order_id);
-                    $wpdb->update($table, $data, $where);
+            } else {
+                $registrations = $wpdb->get_var("SELECT registrations FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
+                $table = $wpdb->prefix . 'courses';
+                $data = array('registrations' => $registrations + 1);
+                $where = array('product_id' => $productID);
+                $wpdb->update($table, $data, $where);
+                $registered_emails = $wpdb->get_var("SELECT registered_emails FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
+                $newRegisteredEmails = "";
+                if ($registered_emails == '' or $registered_emails == null or $registered_emails == ' ') {
+                    $newRegisteredEmails = ';' . $to . ';';
+                } else {
+                    $newRegisteredEmails = $registered_emails . $to . ';';
                 }
+                $data = array('registered_emails' => $newRegisteredEmails);
+                $wpdb->update($table, $data, $where);
+                $table = $wpdb->prefix . 'wc_order_product_lookup';
+                $data = array('verified' => '1');
+                $where = array('order_id' => $order_id);
+                $wpdb->update($table, $data, $where);
             }
             $productID = $wpdb->get_var("SELECT product_id FROM $wpdb->prefix" . "wc_order_product_lookup WHERE order_id = $order_id");
             $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
@@ -105,15 +126,6 @@ if (isset($_GET['order_id'])) {
             }
             $headers = array('Content-Type: text/html; charset=UTF-8');
             wp_mail($to, $subject, $message, $headers);
-            $registrations = $wpdb->get_var("SELECT registrations FROM $wpdb->prefix" . "courses WHERE product_id = $productID");
-            $table = $wpdb->prefix . 'courses';
-            $data = array('registrations' => $registrations + 1);
-            $where = array('product_id' => $productID);
-            $wpdb->update($table, $data, $where);
-            $table = $wpdb->prefix . 'wc_order_product_lookup';
-            $data = array('verified' => '1');
-            $where = array('order_id' => $order_id);
-            $wpdb->update($table, $data, $where);
         } else { ?><script>
                 window.location.href = "/courses";
             </script><?php
