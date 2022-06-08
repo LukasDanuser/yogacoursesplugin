@@ -136,6 +136,7 @@ class PageCreator extends BaseController
   url varchar(55) DEFAULT '' NOT NULL,
   product_id int NOT NULL UNIQUE,
   registrations int NOT NULL DEFAULT 0,
+  registered_emails text not null DEFAULT '',
   PRIMARY KEY  (id)
 ) $charset_collate;";
 
