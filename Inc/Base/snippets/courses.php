@@ -33,7 +33,7 @@ $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
 $rowsNeeded = ceil(sizeof($results) / 4);
 $courseAmount = sizeof($results);
 foreach ($results as $row) {
-    if ($row->registrations >= 10) {
+    if ($row->registrations >= $row->max_registrations) {
         $courseAmount--;
     }
 }
@@ -58,7 +58,7 @@ if (is_user_logged_in()) {
                 $t1 = 0;
                 $t2 = 1;
                 foreach ($results as $row) {
-                    if ($row->registrations >= 10) {
+                    if ($row->registrations >= $row->max_registrations) {
                         continue;
                     }
                     $t1++;
@@ -104,7 +104,7 @@ if (is_user_logged_in()) {
                 $t1 = 0;
                 $t2 = 1;
                 foreach ($results as $row) {
-                    if ($row->registrations >= 10) {
+                    if ($row->registrations >= $row->max_registrations) {
                         continue;
                     }
                     $t1++;
@@ -152,7 +152,7 @@ if (is_user_logged_in()) {
             $t1 = 0;
             $t2 = 1;
             foreach ($results as $row) {
-                if ($row->registrations >= 10) {
+                if ($row->registrations >= $row->max_registrations) {
                     continue;
                 }
                 $t1++;
@@ -193,7 +193,7 @@ if (is_user_logged_in()) {
         $t1 = 0;
         $t2 = 1;
         foreach ($results as $row) {
-            if ($row->registrations >= 10) {
+            if ($row->registrations >= $row->max_registrations) {
                 continue;
             }
             $t1++;
