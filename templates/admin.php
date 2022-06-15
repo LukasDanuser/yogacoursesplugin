@@ -28,6 +28,7 @@ $description = isset($_REQUEST['description']) ? htmlspecialchars($_REQUEST['des
 $link = isset($_REQUEST['link']) ? htmlspecialchars($_REQUEST['link']) : "";
 $date = isset($_REQUEST['date']) ? htmlspecialchars($_REQUEST['date']) : "";
 $repeat = isset($_POST['repeat']) ? htmlspecialchars($_POST['repeat']) : "";
+$maxReg = isset($_REQUEST['maxReg']) ? htmlspecialchars($_REQUEST['maxReg']) : "";
 $submit = isset($_REQUEST['submit']) ? "submitted" : "";
 $delete = isset($_REQUEST['delete']) ? "delete" : "";
 $deleteVid = isset($_REQUEST['deleteVid']) ? 'deleteVid' : "";
@@ -187,6 +188,7 @@ if ($deleteVid == "deleteVid") {
         <option value="never">Nie</option>
     </select><br><br>
     <input type="text" name="description" id="description" placeholder="Beschreibung" value="<?php echo $descriptionValue; ?>" required><br><br>
+    <input type="number" name="maxReg" id="maxReg" placeholder="Maximale Anmeldungen" value="<?php echo $maxReg; ?>" required><br><br>
     <input type="text" name="link" id="link" placeholder="Link" value="<?php echo $linkValue; ?>" required><br><br>
     <input type="submit" name="submit" value="Speichern">
 </form>
@@ -261,6 +263,7 @@ if (!empty($results)) {
                     <p><b>Teilnehmer: </b> $row->registrations</p>
                     <p><b>Datum:</b> $courseDate</p>
                     <p><b>Wiederholung:</b> $repeatTemp</p>
+                    <p><b>Max Anmeldungen:</b> $row->maxReg</p>
                     <p><b>Link:</b><a href=\"$row->url\"> $row->url</a></p>
                     <p><b>Produkt ID:</b> $row->product_id</p>
                     <div class=\"text-center\">
