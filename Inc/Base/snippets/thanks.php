@@ -35,7 +35,7 @@ if (is_user_logged_in()) {
     $userID = get_current_user_id();
     $registered_courses = $wpdb->get_var("SELECT registered_courses FROM $wpdb->prefix" . "users WHERE ID = $userID");
 
-    if (str_contains($registered_courses, ";" . $courseInfo->id . ';') or str_contains($registered_emails, ";" . wp_get_current_user()->user_email . ';')) {
+    if (str_contains($registered_courses, ";" . $courseInfo->id . ';') or str_contains($registered_emails, ";" . $userID . ';')) {
         if ($_SESSION['mailSent'] == false) {
             $thanksMessage = "Sie sind bereits angemeldet für diesen Kurs.";
             $alreadyRegistered = true;
@@ -46,7 +46,7 @@ if (is_user_logged_in()) {
     $date = date("Y-m-d");
     if ($valid_until != "0000-00-00" and $membership != "0") {
         if ($date < $valid_until) {
-            if ($productID == 0 or $productID == null) {
+            if ($productID == 0 || $productID == null) {
 ?><script>
                     window.location.href = "/courses";
                 </script><?php
@@ -76,7 +76,7 @@ if (is_user_logged_in()) {
                         if ($_SESSION['mailSent'] == false && $alreadyRegistered == false) {
                             wp_mail($to, $subject, $message, $headers) == true ? $mailSent = "Mail sent to $to" : $mailSent = "Mail not sent to $to";
                             $newRegisteredCourses = "";
-                            if ($registered_courses == "0" or $registered_courses == "" or $registered_courses == " " or $registered_courses == ";") {
+                            if ($registered_courses == "0" || $registered_courses == "" || $registered_courses == " " || $registered_courses == ";") {
                                 $newRegisteredCourses = ";" . $courseInfo->id . ";";
                             } else {
                                 $newRegisteredCourses = $registered_courses . $courseInfo->id . ";";
