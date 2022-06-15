@@ -61,6 +61,7 @@ if (is_user_logged_in()) {
                     $cDate = new DateTime($row->date);
                     $courseDate = $cDate->format('d.m.Y H:i');
                     $t1 = $centerThree == true ? 2 : $t1;
+                    $available = $row->max_registrations - $row->registrations;
                     echo "
                     <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
                     <div id=\"course$row->id\" class=\"course-card\">
@@ -71,6 +72,7 @@ if (is_user_logged_in()) {
                             </u></b></h5>
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Datum:</b> $courseDate</p>
+                    <p><b>Freie Plätze:</b> $available</p>
                     <div class=\"text-center\">
                         <label class=\"control-label\" >
                             <p>CHF $row->price</p>
@@ -125,6 +127,7 @@ if (is_user_logged_in()) {
                             </u></b></h5>
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Datum:</b> $courseDate</p>
+                    <p><b>Freie Plätze:</b> $available</p>
                 </div>
             </div></a>
         </div>
@@ -156,6 +159,7 @@ if (is_user_logged_in()) {
                             </u></b></h5>
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Datum:</b> $courseDate</p>
+                    <p><b>Freie Plätze:</b> $available</p>
                     <div class=\"text-center\">
                         <label class=\"control-label\" >
                             <p>CHF $row->price</p>
@@ -192,6 +196,7 @@ if (is_user_logged_in()) {
                             </u></b></h5>
                     <p class=\"card-text\">$row->description</p>
                     <p><b>Datum:</b> $courseDate</p>
+                    <p><b>Freie Plätze:</b> $available</p>
                     <div class=\"text-center\">
                         <label class=\"control-label\" >
                             <p>CHF $row->price</p>
