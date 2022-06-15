@@ -27,6 +27,7 @@ $name = $course[0]->course_name;
 $cDate = new DateTime($course[0]->date);
 $price = $course[0]->price;
 $description = $course[0]->description;
+
 $product_id = $course[0]->product_id;
 $available = $course[0]->max_registrations - $course[0]->registrations;
 $courseDate = $cDate->format('d.m.Y H:i');
@@ -43,7 +44,7 @@ if (is_user_logged_in()) {
     echo "<div class=\"course\">";
     if ($alreadyRegistered == true) {
         echo "<div style=\"text-align:center;\"><p>Sie sind bereits angemeldet für diesen Kurs.</p></div>";
-    } else if ($available <= 0) {
+    } else if ($available <= 0 and $available != null) {
         echo "<div style=\"text-align:center;\"><p>Dieser Kurs ist leider nicht mehr verfügbar.</p><p>Sie können <a href=\"/courses\">hier</a> andere Kurse anschauen.</p></div>";
     } else {
         if ($valid_until != "0000-00-00" and $membership != "0") {
@@ -54,7 +55,11 @@ if (is_user_logged_in()) {
                     <p>$courseDate</p>
                     <p>CHF $price</p>
                     <p>$description</p>
-                    <p>$available Plätze verfügbar</p>
+                    ";
+                if ($available != null and $available != '' and $available != ' ') {
+                    echo "<p>$available Plätze verfügbar</p>";
+                }
+                echo "
                     </a>
                     ";
             } else {
@@ -62,8 +67,11 @@ if (is_user_logged_in()) {
                     <a href=\"/thanks?id=$product_id\" style=\"text-decoration:none;\">
                     <p>$name</p>
                     <p>$courseDate</p>
-                    <p>$description</p>
-                    <p>$available Plätze verfügbar</p>
+                    <p>$description</p>";
+                if ($available != null and $available != '' and $available != ' ') {
+                    echo "<p>$available Plätze verfügbar</p>";
+                }
+                echo "
                     </a>
                     ";
             }
@@ -73,8 +81,11 @@ if (is_user_logged_in()) {
                     <p>$name</p>
                     <p>$courseDate</p>
                     <p>CHF $price</p>
-                    <p>$description</p>
-                    <p>$available Plätze verfügbar</p>
+                    <p>$description</p>";
+            if ($available != null and $available != '' and $available != ' ') {
+                echo "<p>$available Plätze verfügbar</p>";
+            }
+            echo "
                     </a>
                     ";
         }
@@ -85,8 +96,11 @@ if (is_user_logged_in()) {
     <p>$name</p>
     <p>$courseDate</p>
     <p>CHF $price</p>
-    <p>$description</p>
-    <p>$available Plätze verfügbar</p>
+    <p>$description</p>";
+    if ($available != null or $available != '' or $available != ' ') {
+        echo "<p>$available Plätze verfügbar</p>";
+    }
+    echo "
     </a>
     ";
 }
