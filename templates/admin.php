@@ -156,7 +156,8 @@ if ($deleteVid == "deleteVid") {
                             'repeat_every' => $repeat,
                             'description' => $description,
                             'url' => $link,
-                            'product_id' => $product_id
+                            'product_id' => $product_id,
+                            'max_registrations' => $maxReg
                         )
                     );
                     $_POST = array();
@@ -263,7 +264,7 @@ if (!empty($results)) {
                     <p><b>Teilnehmer: </b> $row->registrations</p>
                     <p><b>Datum:</b> $courseDate</p>
                     <p><b>Wiederholung:</b> $repeatTemp</p>
-                    <p><b>Max Anmeldungen:</b> $row->maxReg</p>
+                    <p><b>Max Anmeldungen:</b> $row->max_registrations</p>
                     <p><b>Link:</b><a href=\"$row->url\"> $row->url</a></p>
                     <p><b>Produkt ID:</b> $row->product_id</p>
                     <div class=\"text-center\">
