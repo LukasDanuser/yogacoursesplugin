@@ -32,6 +32,11 @@ $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https"
 $elementIDs = $wpdb->get_results("SELECT id FROM $wpdb->prefix" . "courses");
 $rowsNeeded = ceil(sizeof($results) / 4);
 $courseAmount = sizeof($results);
+foreach ($results as $row) {
+    if ($row->registrations >= 10) {
+        $courseAmount--;
+    }
+}
 $columnsNeeded = $courseAmount >= 4 ? 4 : 3;
 $columnsNeeded = $courseAmount == 2 ? 2 : $columnsNeeded;
 $centerThree = $courseAmount == 1 ? true : false;
@@ -53,6 +58,9 @@ if (is_user_logged_in()) {
                 $t1 = 0;
                 $t2 = 1;
                 foreach ($results as $row) {
+                    if ($row->registrations >= 10) {
+                        continue;
+                    }
                     $t1++;
                     if ($t1 > $columnsNeeded) {
                         $t2++;
@@ -96,7 +104,9 @@ if (is_user_logged_in()) {
                 $t1 = 0;
                 $t2 = 1;
                 foreach ($results as $row) {
-
+                    if ($row->registrations >= 10) {
+                        continue;
+                    }
                     $t1++;
                     if ($t1 > $columnsNeeded) {
                         $t2++;
@@ -105,6 +115,7 @@ if (is_user_logged_in()) {
                     $cDate = new DateTime($row->date);
                     $courseDate = $cDate->format('d.m.Y H:i');
                     $t1 = $centerThree == true ? 2 : $t1;
+                    $available = $row->max_registrations - $row->registrations;
                     if ($columnsNeeded == 2 || $columnsNeeded == 3) {
                         if ($t1 == 1) {
                             echo "<div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important;\">";
@@ -141,6 +152,9 @@ if (is_user_logged_in()) {
             $t1 = 0;
             $t2 = 1;
             foreach ($results as $row) {
+                if ($row->registrations >= 10) {
+                    continue;
+                }
                 $t1++;
                 if ($t1 > $columnsNeeded) {
                     $t2++;
@@ -149,6 +163,7 @@ if (is_user_logged_in()) {
                 $cDate = new DateTime($row->date);
                 $courseDate = $cDate->format('d.m.Y H:i');
                 $t1 = $centerThree == true ? 2 : $t1;
+                $available = $row->max_registrations - $row->registrations;
                 echo "
                 <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
                 <div id=\"course$row->id\" class=\"course-card\">
@@ -178,6 +193,9 @@ if (is_user_logged_in()) {
         $t1 = 0;
         $t2 = 1;
         foreach ($results as $row) {
+            if ($row->registrations >= 10) {
+                continue;
+            }
             $t1++;
             if ($t1 > $columnsNeeded) {
                 $t2++;
@@ -186,6 +204,7 @@ if (is_user_logged_in()) {
             $cDate = new DateTime($row->date);
             $courseDate = $cDate->format('d.m.Y H:i');
             $t1 = $centerThree == true ? 2 : $t1;
+            $available = $row->max_registrations - $row->registrations;
             echo "
             <div class=\"course\" style=\"grid-column: $t1; grid-row: $t2; margin-left: auto !important; margin-right: auto !important;\">
             <div id=\"course$row->id\" class=\"course-card\">
