@@ -26,8 +26,35 @@ $date = date('Y-m-d H:i:s');
 $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses");
 $deleted = false;
 
-//require once updateCourses.php
-require_once(ABSPATH . 'wp-content/plugins/courses-plugin/inc/Base/snippets/updateCourses.php');
+$courses = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses");
+//get all users
+$users = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "users");
+foreach ($courses as $course) {
+    if ($course->date < $date) {
+        $newCourses = "";
+        foreach ($users as $user) {
+            $registered_courses = $user->registered_courses;
+            if (str_contains($registered_courses, ';' . $course->id . ';') and $course->date < $date) {
+                $newCourses = str_replace($course->id . ';', '', $registered_courses);
+                $newCourses = $newCourses == ';' ? '0' : $newCourses;
+                $table = $wpdb->prefix . 'users';
+                $data = array('registered_courses' => $newCourses);
+                $where = array('ID' => $user->ID);
+                $wpdb->update($table, $data, $where);
+            }
+        }
+    }
+    if ($course->date < $date) {
+        $newEmails = "";
+        $newRegs = 0;
+        $table = $wpdb->prefix . 'courses';
+        $data = array('registered_emails' => $newEmails);
+        $where = array('id' => $course->id);
+        $wpdb->update($table, $data, $where);
+        $data = array('registrations' => $newRegs);
+        $wpdb->update($table, $data, $where);
+    }
+}
 
 foreach ($results as $course) {
     if ($date > $course->date) {
