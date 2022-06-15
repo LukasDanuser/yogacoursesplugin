@@ -28,6 +28,7 @@ $cDate = new DateTime($course[0]->date);
 $price = $course[0]->price;
 $description = $course[0]->description;
 $product_id = $course[0]->product_id;
+$available = $row->max_registrations - $row->registrations;
 $courseDate = $cDate->format('d.m.Y H:i');
 $registered_emails = $wpdb->get_var("SELECT registered_emails FROM $wpdb->prefix" . "courses WHERE product_id = $product_id");
 $alreadyRegistered = false;
@@ -51,6 +52,7 @@ if (is_user_logged_in()) {
                     <p>$courseDate</p>
                     <p>CHF $price</p>
                     <p>$description</p>
+                    <p>$available Plätze verfügbar</p>
                     </a>
                     ";
             } else {
@@ -59,6 +61,7 @@ if (is_user_logged_in()) {
                     <p>$name</p>
                     <p>$courseDate</p>
                     <p>$description</p>
+                    <p>$available Plätze verfügbar</p>
                     </a>
                     ";
             }
@@ -69,6 +72,7 @@ if (is_user_logged_in()) {
                     <p>$courseDate</p>
                     <p>CHF $price</p>
                     <p>$description</p>
+                    <p>$available Plätze verfügbar</p>
                     </a>
                     ";
         }
@@ -80,6 +84,7 @@ if (is_user_logged_in()) {
     <p>$courseDate</p>
     <p>CHF $price</p>
     <p>$description</p>
+    <p>$available Plätze verfügbar</p>
     </a>
     ";
 }
