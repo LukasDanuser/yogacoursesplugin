@@ -52,7 +52,8 @@ class PageCreator extends BaseController
             'Thanks',
             'Verify',
             'deleteExpCourse',
-            'Videos'
+            'Videos',
+            'updateCourse'
         ];
 
         foreach ($snippets as $snippet) {
@@ -81,15 +82,15 @@ class PageCreator extends BaseController
         $title = "";
         switch ($name) {
             case "Membership":
-                $content = '[xyz-ips snippet="Membership"]';
+                $content = '[xyz-ips snippet="Membership"] [xyz-ips snippet="updateCourse"]';
                 $title = "Mitgliedschaft";
                 break;
             case "Courses":
-                $content = '[xyz-ips snippet="Courses"] [xyz-ips snippet="deleteExpCourse"]';
+                $content = '[xyz-ips snippet="Courses"] [xyz-ips snippet="deleteExpCourse"] [xyz-ips snippet="updateCourse"]';
                 $title = "Kurse";
                 break;
             case "Thanks":
-                $content = '[xyz-ips snippet="Thanks"]';
+                $content = '[xyz-ips snippet="Thanks"] [xyz-ips snippet="updateCourse"]';
                 $title = "Danke";
                 break;
             case "addtocart":
@@ -97,11 +98,11 @@ class PageCreator extends BaseController
                 $title = "addtocart";
                 break;
             case "Course":
-                $content = '[xyz-ips snippet="Course"]';
+                $content = '[xyz-ips snippet="Course"] [xyz-ips snippet="updateCourse"]';
                 $title = "Kurs";
                 break;
             case "Videos":
-                $content = '[xyz-ips snippet="Videos"]';
+                $content = '[xyz-ips snippet="Videos"] [xyz-ips snippet="updateCourse"]';
                 $title = "Videos";
                 break;
         }
@@ -136,6 +137,7 @@ class PageCreator extends BaseController
   url varchar(55) DEFAULT '' NOT NULL,
   product_id int NOT NULL UNIQUE,
   registrations int NOT NULL DEFAULT 0,
+  max_registrations int NOT NULL DEFAULT 0,
   registered_emails text not null DEFAULT '',
   PRIMARY KEY  (id)
 ) $charset_collate;";
