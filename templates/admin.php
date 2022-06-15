@@ -28,7 +28,7 @@ $description = isset($_REQUEST['description']) ? htmlspecialchars($_REQUEST['des
 $link = isset($_REQUEST['link']) ? htmlspecialchars($_REQUEST['link']) : "";
 $date = isset($_REQUEST['date']) ? htmlspecialchars($_REQUEST['date']) : "";
 $repeat = isset($_POST['repeat']) ? htmlspecialchars($_POST['repeat']) : "";
-$maxReg = isset($_REQUEST['maxReg']) ? htmlspecialchars($_REQUEST['maxReg']) : "";
+$maxReg = isset($_REQUEST['maxReg']) ? htmlspecialchars($_REQUEST['maxReg']) : null;
 $submit = isset($_REQUEST['submit']) ? "submitted" : "";
 $delete = isset($_REQUEST['delete']) ? "delete" : "";
 $deleteVid = isset($_REQUEST['deleteVid']) ? 'deleteVid' : "";
@@ -147,6 +147,7 @@ if ($deleteVid == "deleteVid") {
                 } else {
                     $product_id = createProduct($course_name, $description, $price, null);
                     $table_name = "$wpdb->prefix" . "courses";
+                    $maxReg = $maxReg == 0 ? null : ($maxReg == "" ? null : $maxReg);
                     $wpdb->insert(
                         $table_name,
                         array(
@@ -189,7 +190,7 @@ if ($deleteVid == "deleteVid") {
         <option value="never">Nie</option>
     </select><br><br>
     <input type="text" name="description" id="description" placeholder="Beschreibung" value="<?php echo $descriptionValue; ?>" required><br><br>
-    <input type="number" name="maxReg" id="maxReg" placeholder="Maximale Anmeldungen" value="<?php echo $maxReg; ?>" required><br><br>
+    <input type="number" name="maxReg" id="maxReg" placeholder="Maximale Anmeldungen" title="Leer lassen für unlimitiert" value="<?php echo $maxReg; ?>"><br><br>
     <input type="text" name="link" id="link" placeholder="Link" value="<?php echo $linkValue; ?>" required><br><br>
     <input type="submit" name="submit" value="Speichern">
 </form>
@@ -253,6 +254,12 @@ if (!empty($results)) {
                 $repeatTemp = "Nie";
                 break;
         }
+        $maxRegistrations = "";
+        if ($row->max_registrations == null) {
+            $maxRegistrations = "Unlimitiert";
+        } else {
+            $maxRegistrations = $row->max_registrations;
+        }
         echo "
         <div class=\"course\" style=\"grid-column: $t1Course; grid-row: $t2Course;\">
             <div id=\"course$row->id\" class=\"course-card\">
@@ -264,7 +271,7 @@ if (!empty($results)) {
                     <p><b>Teilnehmer: </b> $row->registrations</p>
                     <p><b>Datum:</b> $courseDate</p>
                     <p><b>Wiederholung:</b> $repeatTemp</p>
-                    <p><b>Max Anmeldungen:</b> $row->max_registrations</p>
+                    <p><b>Max Anmeldungen:</b> $maxRegistrations</p>
                     <p><b>Link:</b><a href=\"$row->url\"> $row->url</a></p>
                     <p><b>Produkt ID:</b> $row->product_id</p>
                     <div class=\"text-center\">
