@@ -22,23 +22,34 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 global $wpdb;
+$date = date('Y-m-d H:i:s');
 //get all courses
 $courses = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses");
-//get user from database
-if (is_user_logged_in()) {
-    $newCourses = "";
-    $newEmails = "";
-    $user = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "users WHERE ID = " . get_current_user_id());
-    $registered_courses = $user->registered_courses;
-    $date = date('Y-m-d H:i:s');
-    foreach ($courses as $course) {
-        $registered_emails = $course->registered_emails;
-        if ((str_contains($registered_courses, ';' . $course->id . ';') or str_contains($registered_emails, ';' . wp_get_current_user()->user_email . ';')) and $course->date < $date) {
-            $newCourses = str_replace(';' . $course->id . ';', '', $registered_courses);
-            $table = $wpdb->prefix . 'user';
-            $data = array('registered_courses' => $newCourses);
-            $where = array('ID' => get_current_user_id());
-            $wpdb->update($table, $data, $where);
+//get all users
+$users = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "users");
+foreach ($courses as $course) {
+    if ($course->date < $date) {
+        $newCourses = "";
+        foreach ($users as $user) {
+            $registered_courses = $user->registered_courses;
+            if (str_contains($registered_courses, ';' . $course->id . ';') and $course->date < $date) {
+                $newCourses = str_replace($course->id . ';', '0', $registered_courses);
+                $newCourses = $newCourses == ';' ? '' : $newCourses;
+                $table = $wpdb->prefix . 'users';
+                $data = array('registered_courses' => $newCourses);
+                $where = array('ID' => $user->ID);
+                $wpdb->update($table, $data, $where);
+            }
         }
+    }
+    if ($course->date < $date) {
+        $newEmails = "";
+        $newRegs = 0;
+        $table = $wpdb->prefix . 'courses';
+        $data = array('registered_emails' => $newEmails);
+        $where = array('id' => $course->id);
+        $wpdb->update($table, $data, $where);
+        $data = array('registrations' => $newRegs);
+        $wpdb->update($table, $data, $where);
     }
 }
