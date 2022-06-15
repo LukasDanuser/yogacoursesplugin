@@ -53,7 +53,7 @@ class PageCreator extends BaseController
             'Verify',
             'deleteExpCourse',
             'Videos',
-            'updateCourse'
+            'updateCourses'
         ];
 
         foreach ($snippets as $snippet) {
@@ -82,15 +82,15 @@ class PageCreator extends BaseController
         $title = "";
         switch ($name) {
             case "Membership":
-                $content = '[xyz-ips snippet="Membership"] [xyz-ips snippet="updateCourse"]';
+                $content = '[xyz-ips snippet="Membership"] [xyz-ips snippet="updateCourses"]';
                 $title = "Mitgliedschaft";
                 break;
             case "Courses":
-                $content = '[xyz-ips snippet="Courses"] [xyz-ips snippet="deleteExpCourse"] [xyz-ips snippet="updateCourse"]';
+                $content = '[xyz-ips snippet="Courses"] [xyz-ips snippet="deleteExpCourse"]';
                 $title = "Kurse";
                 break;
             case "Thanks":
-                $content = '[xyz-ips snippet="Thanks"] [xyz-ips snippet="updateCourse"]';
+                $content = '[xyz-ips snippet="Thanks"] [xyz-ips snippet="updateCourses"]';
                 $title = "Danke";
                 break;
             case "addtocart":
@@ -98,11 +98,11 @@ class PageCreator extends BaseController
                 $title = "addtocart";
                 break;
             case "Course":
-                $content = '[xyz-ips snippet="Course"] [xyz-ips snippet="updateCourse"]';
+                $content = '[xyz-ips snippet="Course"] [xyz-ips snippet="updateCourses"]';
                 $title = "Kurs";
                 break;
             case "Videos":
-                $content = '[xyz-ips snippet="Videos"] [xyz-ips snippet="updateCourse"]';
+                $content = '[xyz-ips snippet="Videos"] [xyz-ips snippet="updateCourses"]';
                 $title = "Videos";
                 break;
         }
