@@ -22,9 +22,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 global $wpdb;
-$date = date("Y-m-d");
+$date = date('Y-m-d H:i:s');
 $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses");
 $deleted = false;
+
+//require once updateCourses.php
+require_once(ABSPATH . 'wp-content/plugins/courses-plugin/inc/Base/snippets/updateCourses.php');
 
 foreach ($results as $course) {
     if ($date > $course->date) {
