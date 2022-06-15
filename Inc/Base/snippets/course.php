@@ -28,7 +28,7 @@ $cDate = new DateTime($course[0]->date);
 $price = $course[0]->price;
 $description = $course[0]->description;
 $product_id = $course[0]->product_id;
-$available = $row->max_registrations - $row->registrations;
+$available = $course[0]->max_registrations - $course[0]->registrations;
 $courseDate = $cDate->format('d.m.Y H:i');
 $registered_emails = $wpdb->get_var("SELECT registered_emails FROM $wpdb->prefix" . "courses WHERE product_id = $product_id");
 $alreadyRegistered = false;
