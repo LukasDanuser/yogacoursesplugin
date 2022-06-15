@@ -42,7 +42,9 @@ if (is_user_logged_in()) {
     $date = date("Y-m-d");
     echo "<div class=\"course\">";
     if ($alreadyRegistered == true) {
-        echo "<p>Sie sind bereits angemeldet für diesen Kurs.</p>";
+        echo "<div style=\"text-align:center;\"><p>Sie sind bereits angemeldet für diesen Kurs.</p></div>";
+    } else if ($available <= 0) {
+        echo "<div style=\"text-align:center;\"><p>Dieser Kurs ist leider nicht mehr verfügbar.</p><p>Sie können <a href=\"/courses\">hier</a> andere Kurse anschauen.</p></div>";
     } else {
         if ($valid_until != "0000-00-00" and $membership != "0") {
             if ($date > $valid_until) {
