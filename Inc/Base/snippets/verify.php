@@ -20,3 +20,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+global $wpdb;
+add_action('woocommerce_payment_complete_order_status', 'payment_complete');
+
+function payment_complete()
+{
+    echo "Payment complete\nDo action now...";
+}
