@@ -49,7 +49,6 @@ class PageCreator extends BaseController
             'Courses',
             'Course',
             'Membership',
-            'Thanks',
             'Verify',
             'deleteExpCourse',
             'Videos',
@@ -90,7 +89,7 @@ class PageCreator extends BaseController
                 $title = "Kurse";
                 break;
             case "Thanks":
-                $content = '[xyz-ips snippet="Verify"] [xyz-ips snippet="Thanks"] [xyz-ips snippet="updateCourses"]';
+                $content = '[xyz-ips snippet="Verify"] [xyz-ips snippet="updateCourses"]';
                 $title = "Danke";
                 break;
             case "addtocart":
