@@ -43,7 +43,7 @@ if (is_user_logged_in()) {
     $valid_until = $wpdb->get_var("SELECT subscription_valid_until FROM $wpdb->prefix" . "users WHERE ID = $userID");
     $date = date("Y-m-d");
     if ($alreadyRegistered == true) {
-        echo "<div style=\"text-align:center;\"><p>Sie sind bereits angemeldet für diesen Kurs.</p></div>";
+        echo "<div style=\"text-align:center;\"><p>Sie sind für diesen Kurs bereits angemeldet.</p></div>";
     } else if ($available <= 0 and $available != null) {
         echo "<div style=\"text-align:center;\"><p>Dieser Kurs ist leider nicht mehr verfügbar.</p><p>Sie können <a href=\"/courses\">hier</a> andere Kurse anschauen.</p></div>";
     } else {
