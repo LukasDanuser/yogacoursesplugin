@@ -44,21 +44,22 @@ $registered_courses = is_user_logged_in() ? $wpdb->get_var("SELECT registered_co
 
 //initialize variables for membership purchase or course purchase w/o membership
 if ($order_id != null) {
-    $wpdb->insert(
-        'courseOrders',
-        array(
-            'order_id' => $order_id,
-            'completed' => false,
-            'user_id' => $userID,
-            'order_date' => $datetime
-        )
-    );
-    $course_orders =  $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id");
-    $order = wc_get_order($order_id);
     $wc_order_item = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "woocommerce_order_items WHERE order_id = $order_id");
     $order_item_id = $wc_order_item[0]->order_item_id;
     $wc_order_itemmeta = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "woocommerce_order_itemmeta WHERE order_item_id = $order_item_id AND meta_key = '_product_id'");
     $product_id = $wc_order_itemmeta[0]->meta_value;
+    $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id") == null ? $wpdb->insert(
+        $wpdb->prefix . 'courseOrders',
+        array(
+            'order_id' => $order_id,
+            'completed' => false,
+            'user_id' => $userID,
+            'product_id' => $product_id,
+            'order_date' => $datetime
+        )
+    ) : "";
+    $course_orders =  $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id");
+    $order = wc_get_order($order_id);
     $newRegisteredEmails = "";
 
     $gold = 30;
@@ -92,7 +93,7 @@ if ($order_id != null) {
                 }
             }
             //update database entry for membership
-            if ($course_orders->completed == false) {
+            if ($course_orders[0]->completed == false) {
                 $table = $wpdb->prefix . 'users';
                 $data = array('membership' => $membership);
                 $where = array('ID' => $userID);
@@ -138,7 +139,7 @@ if ($order_id != null) {
                         $alreadyRegistered = true;
                     }
                 }
-                if ($_SESSION['mailSent'] == false and $alreadyRegistered == false and $course_orders->completed == false) {
+                if ($_SESSION['mailSent'] == false and $alreadyRegistered == false and $course_orders[0]->completed == false) {
                     if ($registered_courses == "0" or $registered_courses == "" or $registered_courses == " " or $registered_courses == ";") {
                         $newRegisteredCourses = ";" . $courseInfo->id . ";";
                     } else {
@@ -190,7 +191,7 @@ if ($order_id != null) {
     } else {
         $thanksMessage = "Vielen Dank für Ihren Einkauf bei uns!";
         $courseInfo = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courses WHERE product_id = $product_id;");
-        if (!str_contains($courseInfo->registered_emails, ";" . $customerEmail . ';') and $course_orders->completed == false) {
+        if (!str_contains($courseInfo->registered_emails, ";" . $customerEmail . ';') and $course_orders[0]->completed == false) {
             $table = $wpdb->prefix . 'courses';
             $data = array('registrations' => $courseInfo->registrations + 1);
             $where = array('product_id' => $product_id);
