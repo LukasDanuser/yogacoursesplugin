@@ -40,6 +40,8 @@ $userID = is_user_logged_in() ? get_current_user_id() : null;
 $valid_until = is_user_logged_in() ? $wpdb->get_var("SELECT subscription_valid_until FROM $wpdb->prefix" . "users WHERE ID = $userID") : null;
 $membership = is_user_logged_in() ? $wpdb->get_var("SELECT membership FROM $wpdb->prefix" . "users WHERE ID = $userID") : null;
 $registered_courses = is_user_logged_in() ? $wpdb->get_var("SELECT registered_courses FROM $wpdb->prefix" . "users WHERE ID = $userID") : null;
+$refund = false;
+$refund_reason = "";
 
 
 //initialize variables for membership purchase or course purchase w/o membership
@@ -55,7 +57,8 @@ if ($order_id != null) {
             'completed' => false,
             'user_id' => $userID,
             'product_id' => $product_id,
-            'order_date' => $datetime
+            'order_date' => $datetime,
+            'refund' => false
         )
     ) : "";
     $course_orders =  $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id");
@@ -113,7 +116,7 @@ if ($order_id != null) {
             $subject = "Mitgliedschaft";
             $message = "
             <html>
-            <div class=\"container\" style=\"border: 1px solid black;\">
+            <div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
 <div class=\"content\" style=\"padding: 5px;\">
 <p>Hallo $first_name $last_name</p>
 <p>Vielen Dank für den kauf von der Mitgliedschaft für ein \"$membershipStr\".</p>
@@ -131,12 +134,19 @@ if ($order_id != null) {
             if ($courseInfo->registrations >= $courseInfo->max_registrations and $_SESSION['mailSent'] == false and $alreadyRegistered == false) {
                 $thanksMessage = "Dieser Kurs ist bereits ausgebucht.";
                 echo "<div style=\"text-align:center;\">$thanksMessage</div>";
+                $refund = true;
+                $refund_reason = "Der Kurs ist bereits ausgebucht.";
             } else {
                 $customerEmail = wp_get_current_user()->user_email;
                 if (str_contains($registered_courses, ";" . $courseInfo->id . ';') or str_contains($courseInfo->registered_emails, ";" . $customerEmail . ';')) {
                     if ($_SESSION['mailSent'] == false) {
-                        $thanksMessage = "Sie sind bereits angemeldet für diesen Kurs.";
+                        $thanksMessage = "Sie sind für diesen Kurs bereits angemeldet.";
                         $alreadyRegistered = true;
+                        $courseOrder = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id");
+                        if ($courseOrder[0]->completed == false and $courseOrder[0]->refund == false) {
+                            $refund = true;
+                            $refund_reason = "Sie sind für diesen Kurs bereits angemeldet.";
+                        }
                     }
                 }
                 if ($_SESSION['mailSent'] == false and $alreadyRegistered == false and $course_orders[0]->completed == false) {
@@ -169,7 +179,7 @@ if ($order_id != null) {
                     $course_link = $courseInfo->url;
 
                     $message = "<html>
-        <div class=\"container\" style=\"border: 1px solid black;\">
+        <div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
         <div class=\"content\" style=\"padding: 5px;\">
         <p>Hallo $first_name $last_name</p>
         <p>Vielen Dank für den kauf vom Kurs \"$course_name\".</p>
@@ -191,7 +201,14 @@ if ($order_id != null) {
     } else {
         $thanksMessage = "Vielen Dank für Ihren Einkauf bei uns!";
         $courseInfo = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courses WHERE product_id = $product_id;");
-        if (!str_contains($courseInfo->registered_emails, ";" . $customerEmail . ';') and $course_orders[0]->completed == false) {
+        if ($courseInfo->registrations >= $courseInfo->max_registrations and $_SESSION['mailSent'] == false and $alreadyRegistered == false) {
+            $thanksMessage = "Dieser Kurs ist bereits ausgebucht.";
+            $courseOrder = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id");
+            if ($courseOrder[0]->completed == false and $courseOrder[0]->refund == false) {
+                $refund = true;
+                $refund_reason = "Dieser Kurs ist bereits ausgebucht.";
+            }
+        } else if (!str_contains($courseInfo->registered_emails, ";" . $customerEmail . ';') and $course_orders[0]->completed == false) {
             $table = $wpdb->prefix . 'courses';
             $data = array('registrations' => $courseInfo->registrations + 1);
             $where = array('product_id' => $product_id);
@@ -214,7 +231,7 @@ if ($order_id != null) {
             $where = array('order_id' => $order_id);
             $wpdb->update($table, $data, $where);
             $message = "<html>
-    <div class=\"container\" style=\"border: 1px solid black;\">
+    <div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
     <div class=\"content\" style=\"padding: 5px;\">
     <p>Hallo $first_name $last_name</p>
     <p>Vielen Dank für den kauf vom Kurs \"$course_name\".</p>
@@ -238,7 +255,7 @@ if ($order_id != null) {
             $customerEmail = wp_get_current_user()->user_email;
             if (str_contains($registered_courses, ";" . $courseInfo->id . ';') or str_contains($courseInfo->registered_emails, ";" . $customerEmail . ';')) {
                 if ($_SESSION['mailSent'] == false) {
-                    $thanksMessage = "Sie sind bereits angemeldet für diesen Kurs.";
+                    $thanksMessage = "Sie sind für diesen Kurs bereits angemeldet.";
                     $alreadyRegistered = true;
                 }
             }
@@ -275,7 +292,7 @@ if ($order_id != null) {
                         $course_link = $courseInfo->url;
                         $name = wp_get_current_user()->user_nicename;
                         $message = "<html>
-<div class=\"container\" style=\"border: 1px solid black;\">
+<div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
 <div class=\"content\" style=\"padding: 5px;\">
 <p>Hallo $name</p>
 <p>Vielen Dank für den kauf vom Kurs \"$course_name\".</p>
@@ -307,4 +324,60 @@ if ($order_id != null) {
                     }
                 }
                 $_SESSION['mailSent'] = $_SESSION['mailSent'] ? true : wp_mail($customerEmail, $subject, $message, $headers);
+            }
+            if ($refund == true) {
+                $order = wc_get_order($order_id);
+                // If it's something else such as a WC_Order_Refund, we don't want that.
+                if (!is_a($order, 'WC_Order')) {
+                    return new WP_Error('wc-order', __('Provided ID is not a WC Order', 'courses-plugin'));
+                }
+
+                if ('refunded' == $order->get_status()) {
+                    return new WP_Error('wc-order', __('Order has been already refunded', 'courses-plugin'));
+                }
+
+
+                // Get Items
+                $order_items   = $order->get_items();
+
+                // Refund Amount
+                $refund_amount = 0;
+
+                // Prepare line items which we are refunding
+                $line_items = array();
+
+                if ($order_items) {
+                    foreach ($order_items as $item_id => $item) {
+
+                        $tax_data = wc_get_order_item_meta($item_id, '_line_tax_data');
+
+                        $refund_tax = 0;
+                        if (is_array($tax_data["total"])) {
+
+                            $refund_tax = array_map('wc_format_decimal', $tax_data["total"]);
+                        }
+                        $refund_amount = wc_format_decimal($refund_amount) + wc_format_decimal(wc_get_order_item_meta($item_id, '_line_total'));
+
+                        $line_items[$item_id] = array(
+                            'qty' => wc_get_order_item_meta($item_id, '_qty'),
+                            'refund_total' => wc_format_decimal(wc_get_order_item_meta($item_id, '_line_total')),
+                            'refund_tax' =>  $refund_tax
+                        );
+                    }
+                }
+                $refund = wc_create_refund(array(
+                    'amount' => $refund_amount,
+                    'reason' => $refund_reason,
+                    'order_id' => $order_id,
+                    'line_items' => $line_items,
+                    'refund_payment' => true
+                ));
+                $table = $wpdb->prefix . 'courseOrders';
+                $data = array('refund' => true);
+                $where = array('order_id' => $order_id);
+                $wpdb->update($table, $data, $where);
+                $data = array('completed' => true);
+                $wpdb->update($table, $data, $where);
+                echo "<div style=\"text-align:center;\">Die Zahlung wird ihnen zurückerstattet.</div>";
+                return $refund;
             }
