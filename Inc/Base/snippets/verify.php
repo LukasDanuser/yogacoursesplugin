@@ -28,6 +28,7 @@ $_SESSION['mailSent'] = isset($_SESSION['mailSent']) ? $_SESSION['mailSent'] : f
 $order_id = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : null;
 $product_id = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
 $date = date("Y-m-d");
+$datetime = date('Y-m-d H:i:s');
 $headers = array('Content-Type: text/html; charset=UTF-8');
 $message = "";
 $subject = "";
@@ -40,14 +41,26 @@ $valid_until = is_user_logged_in() ? $wpdb->get_var("SELECT subscription_valid_u
 $membership = is_user_logged_in() ? $wpdb->get_var("SELECT membership FROM $wpdb->prefix" . "users WHERE ID = $userID") : null;
 $registered_courses = is_user_logged_in() ? $wpdb->get_var("SELECT registered_courses FROM $wpdb->prefix" . "users WHERE ID = $userID") : null;
 
+
 //initialize variables for membership purchase or course purchase w/o membership
 if ($order_id != null) {
+    $wpdb->insert(
+        'courseOrders',
+        array(
+            'order_id' => $order_id,
+            'completed' => false,
+            'user_id' => $userID,
+            'order_date' => $datetime
+        )
+    );
+    $course_orders =  $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id");
     $order = wc_get_order($order_id);
     $wc_order_item = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "woocommerce_order_items WHERE order_id = $order_id");
     $order_item_id = $wc_order_item[0]->order_item_id;
     $wc_order_itemmeta = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "woocommerce_order_itemmeta WHERE order_item_id = $order_item_id AND meta_key = '_product_id'");
     $product_id = $wc_order_itemmeta[0]->meta_value;
     $newRegisteredEmails = "";
+
     $gold = 30;
     $silver = 32;
     $membership = 0;
@@ -60,7 +73,8 @@ if ($order_id != null) {
     //if membership is bought
     if (is_user_logged_in()) {
         if ($product_id == $gold or $product_id == $silver) {
-            if ($order == $silver) {
+            $thanksMessage = "Vielen Dank für Ihren Einkauf bei uns!";
+            if ($product_id == $silver) {
                 $membership = 1;
                 $membershipStr = "halbes Jahr";
                 if ($valid_until > $date) {
@@ -68,7 +82,7 @@ if ($order_id != null) {
                 } elseif ($valid_until < $date) {
                     $valid_until_new = date('Y-m-d', strtotime($date . ' + 6 months'));
                 }
-            } elseif ($order == $gold) {
+            } elseif ($product_id == $gold) {
                 $membership = 2;
                 $membershipStr = "Jahr";
                 if ($valid_until > $date) {
@@ -78,12 +92,18 @@ if ($order_id != null) {
                 }
             }
             //update database entry for membership
-            $table = $wpdb->prefix . 'users';
-            $data = array('membership' => $membership);
-            $where = array('ID' => $userID);
-            $wpdb->update($table, $data, $where);
-            $data = array('subscription_valid_until' => $valid_until_new);
-            $wpdb->update($table, $data, $where);
+            if ($course_orders->completed == false) {
+                $table = $wpdb->prefix . 'users';
+                $data = array('membership' => $membership);
+                $where = array('ID' => $userID);
+                $wpdb->update($table, $data, $where);
+                $data = array('subscription_valid_until' => $valid_until_new);
+                $wpdb->update($table, $data, $where);
+                $table = $wpdb->prefix . 'courseOrders';
+                $data = array('completed' => true);
+                $where = array('order_id' => $order_id);
+                $wpdb->update($table, $data, $where);
+            }
             /**
              * TO DO:
              * DONT UPDATE AGAIN IF PAGE IS RELOADED
@@ -102,12 +122,9 @@ if ($order_id != null) {
 </div>
 </html>
             ";
+
+            echo "<div style=\"text-align:center;\">$thanksMessage</div>";
             $_SESSION['mailSent'] = $_SESSION['mailSent'] ? true : wp_mail($customerEmail, $subject, $message, $headers);
-            /**
-             * TO DO:
-             * SEND EMAIL ONLY ONCE
-             * 
-             */
         } else {
             $courseInfo = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courses WHERE product_id = $product_id;");
             if ($courseInfo->registrations >= $courseInfo->max_registrations and $_SESSION['mailSent'] == false and $alreadyRegistered == false) {
@@ -121,7 +138,7 @@ if ($order_id != null) {
                         $alreadyRegistered = true;
                     }
                 }
-                if ($_SESSION['mailSent'] == false and $alreadyRegistered == false) {
+                if ($_SESSION['mailSent'] == false and $alreadyRegistered == false and $course_orders->completed == false) {
                     if ($registered_courses == "0" or $registered_courses == "" or $registered_courses == " " or $registered_courses == ";") {
                         $newRegisteredCourses = ";" . $courseInfo->id . ";";
                     } else {
@@ -135,6 +152,7 @@ if ($order_id != null) {
                     $data = array('registrations' => $courseInfo->registrations + 1);
                     $where = array('product_id' => $product_id);
                     $wpdb->update($table, $data, $where);
+
                     $newRegisteredEmails = "";
                     if ($courseInfo->registered_emails == '' or $courseInfo->registered_emails == null or $courseInfo->registered_emails == ' ') {
                         $newRegisteredEmails = ';' . $customerEmail . ';';
@@ -159,19 +177,20 @@ if ($order_id != null) {
         </div>
         </div>
         </html>";
+                    $table = $wpdb->prefix . 'courseOrders';
+                    $data = array('completed' => true);
+                    $where = array('order_id' => $order_id);
+                    $wpdb->update($table, $data, $where);
                     $_SESSION['mailSent'] = $_SESSION['mailSent'] ? true : wp_mail($customerEmail, $subject, $message, $headers);
-                    /**
-                     * TO DO:
-                     * SEND EMAIL ONLY ONCE
-                     * 
-                     */
                 } else {
                     echo "<div style=\"text-align:center;\">$thanksMessage</div>";
                 }
             }
         }
     } else {
-        if (!str_contains($courseInfo->registered_emails, ";" . $customerEmail . ';')) {
+        $thanksMessage = "Vielen Dank für Ihren Einkauf bei uns!";
+        $courseInfo = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courses WHERE product_id = $product_id;");
+        if (!str_contains($courseInfo->registered_emails, ";" . $customerEmail . ';') and $course_orders->completed == false) {
             $table = $wpdb->prefix . 'courses';
             $data = array('registrations' => $courseInfo->registrations + 1);
             $where = array('product_id' => $product_id);
@@ -184,17 +203,15 @@ if ($order_id != null) {
             }
             $data = array('registered_emails' => $newRegisteredEmails);
             $wpdb->update($table, $data, $where);
-            /**
-             * TO DO:
-             * DONT UPDATE AGAIN IF PAGE IS RELOADED
-             * 
-             */
-
             $subject = "Yoga Kurs";
             $course_name = $courseInfo->course_name;
             $course_date = $courseInfo->date;
             $course_link = $courseInfo->url;
 
+            $table = $wpdb->prefix . 'courseOrders';
+            $data = array('completed' => true);
+            $where = array('order_id' => $order_id);
+            $wpdb->update($table, $data, $where);
             $message = "<html>
     <div class=\"container\" style=\"border: 1px solid black;\">
     <div class=\"content\" style=\"padding: 5px;\">
@@ -206,12 +223,8 @@ if ($order_id != null) {
     </div>
     </html>";
             $_SESSION['mailSent'] = $_SESSION['mailSent'] ? true : wp_mail($customerEmail, $subject, $message, $headers);
-            /**
-             * TO DO:
-             * SEND EMAIL ONLY ONCE
-             * 
-             */
         }
+        echo "<div style=\"text-align:center;\">$thanksMessage</div>";
     }
 } else if ($product_id != null) {
 
@@ -293,9 +306,4 @@ if ($order_id != null) {
                     }
                 }
                 $_SESSION['mailSent'] = $_SESSION['mailSent'] ? true : wp_mail($customerEmail, $subject, $message, $headers);
-                /**
-                 * TO DO:
-                 * SEND EMAIL ONLY ONCE
-                 * 
-                 */
             }
