@@ -160,6 +160,7 @@ class PageCreator extends BaseController
             user_id int NOT NULL DEFAULT 0,
             product_id int NOT NULL DEFAULT 0,
             order_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+            refund boolean NOT NULL DEFAULT false,
             PRIMARY KEY (id)
             ) $charset_collate;";
         dbDelta($sql);
