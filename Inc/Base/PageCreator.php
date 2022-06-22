@@ -152,12 +152,13 @@ class PageCreator extends BaseController
             PRIMARY KEY  (id)
           ) $charset_collate;";
         dbDelta($sql);
-        $table_name = "courseOrders";
+        $table_name = $wpdb->prefix . "courseOrders";
         $sql = "CREATE TABLE IF NOT EXISTS $table_name (
             id mediumint(9) NOT NULL UNIQUE AUTO_INCREMENT,
             order_id int NOT NULL DEFAULT 0,
             completed boolean NOT NULL DEFAULT false,
             user_id int NOT NULL DEFAULT 0,
+            product_id int NOT NULL DEFAULT 0,
             order_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
             PRIMARY KEY (id)
             ) $charset_collate;";
