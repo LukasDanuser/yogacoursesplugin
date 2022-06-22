@@ -74,7 +74,6 @@ class PageCreator extends BaseController
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "subscription_valid_until", "date", "display_name", "'0000-00-00'");
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "registered_courses", "text", "display_name", "'0'");
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "membership", "tinyint(11)", "display_name", 0);
-        $this->createDatabaseColumn("$wpdb->prefix" . "wc_order_product_lookup", "verified", "tinyint(11)", "shipping_tax_amount", 0);
     }
     function create_page($name)
     {
@@ -127,7 +126,7 @@ class PageCreator extends BaseController
         $charset_collate = $wpdb->get_charset_collate();
 
         $sql = "CREATE TABLE IF NOT EXISTS $table_name (
-  id mediumint(9) NOT NULL AUTO_INCREMENT, 
+  id mediumint(9) NOT NULL UNIQUE AUTO_INCREMENT, 
   course_name text NOT NULL,
   price int NOT NULL,
   date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -145,13 +144,23 @@ class PageCreator extends BaseController
         dbDelta($sql);
         $table_name = $wpdb->prefix . "courseVideos";
         $sql = "CREATE TABLE IF NOT EXISTS $table_name (
-            id mediumint(9) NOT NULL AUTO_INCREMENT, 
+            id mediumint(9) NOT NULL UNIQUE AUTO_INCREMENT, 
             file_path text NOT NULL,
             file_url text NOT NULL,
             video_name text NOT NULL,
             video_description text NOT NULL,
             PRIMARY KEY  (id)
           ) $charset_collate;";
+        dbDelta($sql);
+        $table_name = "courseOrders";
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            id mediumint(9) NOT NULL UNIQUE AUTO_INCREMENT,
+            order_id int NOT NULL DEFAULT 0,
+            completed boolean NOT NULL DEFAULT false,
+            user_id int NOT NULL DEFAULT 0,
+            order_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+            PRIMARY KEY (id)
+            ) $charset_collate;";
         dbDelta($sql);
     }
 
