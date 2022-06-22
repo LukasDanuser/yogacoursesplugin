@@ -33,6 +33,7 @@ $available = $course[0]->max_registrations - $course[0]->registrations;
 $courseDate = $cDate->format('d.m.Y H:i');
 $registered_emails = $wpdb->get_var("SELECT registered_emails FROM $wpdb->prefix" . "courses WHERE product_id = $product_id");
 $alreadyRegistered = false;
+echo "<div class=\"course\">";
 if (is_user_logged_in()) {
     if (str_contains($registered_emails, ";" . wp_get_current_user()->user_email . ';')) {
         $alreadyRegistered = true;
@@ -41,7 +42,6 @@ if (is_user_logged_in()) {
     $membership = $wpdb->get_var("SELECT membership FROM $wpdb->prefix" . "users WHERE ID = $userID");
     $valid_until = $wpdb->get_var("SELECT subscription_valid_until FROM $wpdb->prefix" . "users WHERE ID = $userID");
     $date = date("Y-m-d");
-    echo "<div class=\"course\">";
     if ($alreadyRegistered == true) {
         echo "<div style=\"text-align:center;\"><p>Sie sind bereits angemeldet für diesen Kurs.</p></div>";
     } else if ($available <= 0 and $available != null) {
