@@ -202,7 +202,7 @@ if ($deleteVid == "deleteVid") {
     <label for="vidDes"></label>
     <input type="text" name="vidDes" id="vidDes" placeholder="Beschreibung" required>
     <br /><br>
-    <input type="submit" name="submit" value="Speichern" />
+    <input type="submit" name="submit" value="Speichern" /><br>
 </form>
 
 <?php
