@@ -40,13 +40,13 @@ grid-gap: 10px;
 grid-auto-rows: minmax(100px, auto);">
     <a style="text-align: center;" id="silver" href="/addtocart?id=<?php echo $silver ?>&href=<?php echo $href; ?>"><img style="display: block;
   margin-left: auto;
-  margin-right: auto;" alt="silver" src="<?php echo $link; ?>/httpdocs/wp-content/plugins/courses-plugin/src/images/silver-membership.png" width="100" height="100">
+  margin-right: auto;" alt="silver" src="<?php echo $link; ?>/wp-content/plugins/coursesplugin/images/silver-membership.png" width="100" height="100">
         <p>Halbes Jahr</p>
     </a>
 
     <a style="text-align: center;" id="gold" href="/addtocart?id=<?php echo $gold ?>&amp;href=<?php echo $href; ?>"><img style="display: block;
   margin-left: auto;
-  margin-right: auto;" alt="gold" src="<?php echo $link; ?>/httpdocs/wp-content/plugins/courses-plugin/src/images/gold-membership.png" width="100" height="100">
+  margin-right: auto;" alt="gold" src="<?php echo $link; ?>/wp-content/plugins/coursesplugin/images/gold-membership.png" width="100" height="100">
         <p>Jahr</p>
     </a>
 </div>
