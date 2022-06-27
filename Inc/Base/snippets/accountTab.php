@@ -34,20 +34,28 @@ function uwp_account_form_display_cb($type)
         $registeredCourses = explode(";", $wpdb->get_var("SELECT registered_courses FROM $wpdb->prefix" . "users WHERE ID = " . get_current_user_id()));
         $courseAmount = count($registeredCourses);
         $rowsNeeded = ceil($courseAmount / 2);
-        $t1 = 0;
-        if ($courseAmount > 1) {
-            $t1 = 1;
+        $columnsNeeded = 0;
+        $column = 0;
+        $row = 1;
+        if ($courseAmount <= 1) {
+            $columnsNeeded = 1;
         } else {
-            $t1 = 2;
+            $columnsNeeded = 2;
         }
+        echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat($columnsNeeded, 1fr); column-gap: 1rem; row-gap: 1rem; grid-template-rows: repeat($rowsNeeded, 1fr);\">";
         foreach ($registeredCourses as $registeredCourse) {
-            if ($registeredCourse == null or $registeredCourse == "" or $registeredCourse > 1) {
+            if ($registeredCourse == null or $registeredCourse == "" or $registeredCourse < 1) {
                 continue;
+            }
+            $column++;
+            if ($column > $columnsNeeded) {
+                $row++;
+                $column = 1;
             }
             $course = $wpdb->get_row("SELECT * FROM $wpdb->prefix" . "courses WHERE ID = " . $registeredCourse);
             $cDate = new DateTime($course->date);
             $courseDate = $cDate->format('d.m.Y H:i');
-            echo "<div class=\"course\" style=\"grid-column: $t1; grid-row: $rowsNeeded; \">
+            echo "<div class=\"course\" style=\"grid-column: $column; grid-row: $row; \">
             <div id=\"course$course->id\" class=\"course-card\">
         <div class=\"card-body\">
             <h5 class=\"card-title text-center\"><b><u>
@@ -60,5 +68,6 @@ function uwp_account_form_display_cb($type)
 </div>
             ";
         }
+        echo "</div>";
     }
 }
