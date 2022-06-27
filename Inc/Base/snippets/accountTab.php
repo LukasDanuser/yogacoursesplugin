@@ -6,7 +6,7 @@ function uwp_account_available_tabs_cb($tabs)
 
     $tabs['courses'] = array(
         'title' => __('Meine Kurse', 'userswp'),
-        'icon'  => 'fas fa-user',
+        'icon'  => 'fas fa-graduation-cap',
     );
 
     return $tabs;
