@@ -57,7 +57,7 @@ class Setup extends BaseController
             'updateCourses'
         ];
         $global_snippets = [
-            'courseAccountTab'
+            'accountTab'
         ];
 
         foreach ($global_snippets as $snippet) {
@@ -208,7 +208,8 @@ class Setup extends BaseController
         $datetime = date('Y-m-d H:i:s');
         $table_name = $wpdb->prefix . "snippets";
         $code = file_get_contents('snippets/' . strtolower($snippet) . '.php', "r");
-        $wpdb->delete($table_name, array('title' => $snippet));
+        $code = str_replace("<?php", "", $code);
+        $wpdb->delete($table_name, array('name' => $snippet));
         $wpdb->insert(
             $table_name,
             array(
