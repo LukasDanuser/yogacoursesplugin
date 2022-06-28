@@ -38,7 +38,7 @@ final class Init
             Pages\Admin::class,
             Base\Enqueue::class,
             Base\SettingsLinks::class,
-            Base\PageCreator::class
+            Base\Setup::class
         ];
     }
 
