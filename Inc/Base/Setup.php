@@ -25,13 +25,15 @@ namespace Inc\Base;
 
 use \Inc\Base\BaseController;
 
-class PageCreator extends BaseController
+class Setup extends BaseController
 {
+
     function __construct()
     {
     }
     public function register()
     {
+        global $wpdb;
         global $wp_query;
         if (!isset($wp_query)) {
             return;
@@ -54,9 +56,14 @@ class PageCreator extends BaseController
             'Videos',
             'updateCourses'
         ];
+        $global_snippets = [
+            'courseAccountTab'
+        ];
 
+        foreach ($global_snippets as $snippet) {
+            $this->createGlobalSnippet($snippet);
+        }
         foreach ($snippets as $snippet) {
-            global $wpdb;
             $this->createSnippets($snippet);
         }
         foreach ($page_paths as $page_path) {
@@ -67,7 +74,6 @@ class PageCreator extends BaseController
                 $this->create_page($page_path);
             }
         }
-        global $wpdb;
         $this->create_table();
         $testTableName = $wpdb->prefix . "users";
 
@@ -77,6 +83,7 @@ class PageCreator extends BaseController
     }
     function create_page($name)
     {
+        global $wpdb;
         $title = "";
         switch ($name) {
             case "Membership":
@@ -182,7 +189,7 @@ class PageCreator extends BaseController
     {
         global $wpdb;
         $code = file_get_contents('snippets/' . strtolower($name) . '.php', "r");
-        $table_name = "$wpdb->prefix" . "xyz_ips_short_code";
+        $table_name = $wpdb->prefix . "xyz_ips_short_code";
         $wpdb->delete($table_name, array('title' => $name));
         $wpdb->insert(
             $table_name,
@@ -191,6 +198,26 @@ class PageCreator extends BaseController
                 'content' => strval($code),
                 'short_code' => "[xyz-ips snippet=\"$name\"]",
                 'status' => 1
+            )
+        );
+    }
+
+    function createGlobalSnippet($snippet)
+    {
+        global $wpdb;
+        $datetime = date('Y-m-d H:i:s');
+        $table_name = $wpdb->prefix . "snippets";
+        $code = file_get_contents('snippets/' . strtolower($snippet) . '.php', "r");
+        $wpdb->delete($table_name, array('title' => $snippet));
+        $wpdb->insert(
+            $table_name,
+            array(
+                'name' => $snippet,
+                'code' => strval($code),
+                'scope' => "global",
+                'priority' => 10,
+                'active' => 1,
+                'modified' => $datetime,
             )
         );
     }
