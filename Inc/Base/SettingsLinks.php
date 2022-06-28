@@ -34,7 +34,7 @@ class SettingsLinks extends BaseController
 
     public function settings_link($links)
     {
-        $settings_link = '<a href="admin.php?page=courses_plugin">Settings</a>';
+        $settings_link = '<i class="fa-solid fa-graduation-cap"></i><a href="admin.php?page=courses_plugin">Settings</a>';
         array_push($links, $settings_link);
         return $links;
     }
