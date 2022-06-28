@@ -30,8 +30,20 @@ class SettingsLinks extends BaseController
     public function register()
     {
         add_filter("plugin_action_links_$this->plugin", array($this, 'settings_link'));
+        add_action("admin_menu", array($this, 'course_menu'));
     }
 
+    public function course_menu()
+    {
+        add_menu_page(
+            'Kurse',
+            'Kurse',
+            'manage_options',
+            'manage-courses_plugin',
+            'graduation-cap-solid',
+            '/coursesplugin/images/graduation-cap-solid.svg'
+        );
+    }
     public function settings_link($links)
     {
         $settings_link = '<a href="admin.php?page=courses_plugin">Settings</a>';
