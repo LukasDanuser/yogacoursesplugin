@@ -204,7 +204,7 @@ if ($deleteVid == "deleteVid") {
     <br /><br>
     <input type="submit" name="submit" value="Speichern" /><br>
 </form>
-
+<br>
 <?php
 $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses ORDER BY date ASC");
 $videos = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseVideos");
