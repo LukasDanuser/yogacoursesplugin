@@ -171,6 +171,14 @@ class Setup extends BaseController
             PRIMARY KEY (id)
             ) $charset_collate;";
         dbDelta($sql);
+        $table_name = $wpdb->prefix . "courseSettings";
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            id mediumint(9) NOT NULL UNIQUE AUTO_INCREMENT,
+            membership_productID int NOT NULL UNIQUE DEFAULT 0,
+            membership_type text NOT NULL DEFAULT '',
+            PRIMARY KEY (id)
+            ) $charset_collate;";
+        dbDelta($sql);
     }
 
     function createDatabaseColumn($table, $column, $datatype, $after, $default)
