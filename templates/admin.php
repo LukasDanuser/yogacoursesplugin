@@ -1,4 +1,4 @@
-<h1>Courses Plugin</h1>
+<h1>Kurse Admin</h1>
 <?php
 /**
  * @package CoursesPlugin
@@ -39,6 +39,7 @@ $descriptionValue = "";
 $linkValue = "";
 $dateValue = "";
 $repeatValue = "";
+$mmIDSet = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
 global $wpdb;
 
 
@@ -164,6 +165,33 @@ if ($deleteVid == "deleteVid") {
                     $_POST = array();
                 }
             }
+            if ($mmIDSet == null or $mmIDSet == "") {
+                if (isset($_REQUEST['submitID'])) {
+                    $wpdb->insert(
+                        "$wpdb->prefix" . "courseSettings",
+                        array(
+                            'membership_productID' => $_REQUEST['annual_productID'],
+                            'membership_type' => 'annual'
+                        )
+                    );
+                    $wpdb->insert(
+                        "$wpdb->prefix" . "courseSettings",
+                        array(
+                            'membership_productID' => $_REQUEST['semiAnnual_productID'],
+                            'membership_type' => 'semiannual'
+                        )
+                    );
+                }
+                echo <<< EOL
+                <form method="post">
+                <input type="number" name="annual_productID" placeholder="Product ID jährlich" id="annual_productID" required>
+                <input type="number" name="semiAnnual_productID" placeholder="Product ID halb-jährlich" id="semiAnnual_productID" required>
+                <input type="submit" name="submitID" value="Speichern" /><br>
+                </form>
+                EOL;
+            }
+
+
                     ?>
 <form method="post">
     <input type="text" name="course_name" id="course_name" placeholder="Kurs Name" value="<?php echo $course_nameValue; ?>" required><br><br>
