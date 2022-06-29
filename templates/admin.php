@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 
+global $wpdb;
 $course_name = isset($_REQUEST['course_name']) ? htmlspecialchars($_REQUEST['course_name']) : "";
 $price = isset($_REQUEST['price']) ? htmlspecialchars($_REQUEST['price']) : "";
 $description = isset($_REQUEST['description']) ? htmlspecialchars($_REQUEST['description']) : "";
@@ -40,7 +41,6 @@ $linkValue = "";
 $dateValue = "";
 $repeatValue = "";
 $mmIDSet = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
-global $wpdb;
 
 
 function createProduct($title, $body, $price, $sku)
@@ -181,13 +181,15 @@ if ($deleteVid == "deleteVid") {
                             'membership_type' => 'semiannual'
                         )
                     );
+                    header("Refresh:0");
                 }
                 echo <<< EOL
                 <form method="post">
+                <p>Bitte setzen Sie die IDs der Produkte für die Mitgliedschaften:</p>
                 <input type="number" name="annual_productID" placeholder="Product ID jährlich" id="annual_productID" required>
                 <input type="number" name="semiAnnual_productID" placeholder="Product ID halb-jährlich" id="semiAnnual_productID" required>
                 <input type="submit" name="submitID" value="Speichern" /><br>
-                </form>
+                </form><br>
                 EOL;
             }
 
