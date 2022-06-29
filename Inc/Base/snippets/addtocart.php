@@ -21,10 +21,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-if (isset($_GET['id'])) {
+if (isset($_GET['membership'])) {
     global $woocommerce;
+    $href = "";
+    $annual = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
+    $semiAnnual = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'semiannual'");
+    $productID = $_GET['membership'] == 'jahr' ? $annual : ($_GET['membership'] == 'halb' ? $semiAnnual : 'invalid');
+    if ($productID != 'invalid') {
+        echo "<script>
+        window.location.href = \"/\";
+    </script>";
+    }
+    if (is_user_logged_in()) {
+        $href = "checkout";
+    } else {
+        $href = "register";
+    }
     WC()->cart->empty_cart();
-    $woocommerce->cart->add_to_cart($_GET['id']);
+    $woocommerce->cart->add_to_cart($productID);
 
     if (isset($_GET['href'])) {
         $href = $_GET['href'];

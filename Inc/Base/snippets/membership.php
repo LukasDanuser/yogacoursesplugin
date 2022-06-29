@@ -25,11 +25,6 @@ $href = "";
 $gold = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
 $silver = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'semiannual'");
 
-if (is_user_logged_in()) {
-    $href = "checkout";
-} else {
-    $href = "register";
-}
 $link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[SERVER_NAME]";
 
 ?>
@@ -38,13 +33,13 @@ display: grid;
 grid-template-columns: repeat(2, 1fr);
 grid-gap: 10px;
 grid-auto-rows: minmax(100px, auto);">
-    <a style="text-align: center;" id="silver" href="/addtocart?id=<?php echo $silver ?>&href=<?php echo $href; ?>"><img style="display: block;
+    <a style="text-align: center;" id="silver" href="/addtocart?membership=<?php echo $silver ?>"><img style="display: block;
   margin-left: auto;
   margin-right: auto;" alt="silver" src="<?php echo $link; ?>/wp-content/plugins/coursesplugin/images/silver-membership.png" width="100" height="100">
         <p>Halbes Jahr</p>
     </a>
 
-    <a style="text-align: center;" id="gold" href="/addtocart?id=<?php echo $gold ?>&amp;href=<?php echo $href; ?>"><img style="display: block;
+    <a style="text-align: center;" id="gold" href="/addtocart?membership=<?php echo $gold ?>&amp;"><img style="display: block;
   margin-left: auto;
   margin-right: auto;" alt="gold" src="<?php echo $link; ?>/wp-content/plugins/coursesplugin/images/gold-membership.png" width="100" height="100">
         <p>Jahr</p>
