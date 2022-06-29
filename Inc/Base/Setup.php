@@ -50,7 +50,6 @@ class Setup extends BaseController
             'addtocart',
             'Courses',
             'Course',
-            'Membership',
             'Verify',
             'deleteExpCourse',
             'Videos',
@@ -86,10 +85,6 @@ class Setup extends BaseController
         global $wpdb;
         $title = "";
         switch ($name) {
-            case "Membership":
-                $content = '[xyz-ips snippet="Membership"] [xyz-ips snippet="updateCourses"]';
-                $title = "Mitgliedschaft";
-                break;
             case "Courses":
                 $content = '[xyz-ips snippet="Courses"] [xyz-ips snippet="deleteExpCourse"]';
                 $title = "Kurse";

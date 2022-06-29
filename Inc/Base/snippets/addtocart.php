@@ -23,11 +23,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 if (isset($_GET['membership'])) {
     global $woocommerce;
+    global $wüdb;
     $href = "";
     $annual = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
     $semiAnnual = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'semiannual'");
     $productID = $_GET['membership'] == 'jahr' ? $annual : ($_GET['membership'] == 'halb' ? $semiAnnual : 'invalid');
-    if ($productID != 'invalid') {
+    if ($productID == 'invalid') {
         echo "<script>
         window.location.href = \"/\";
     </script>";
@@ -40,22 +41,21 @@ if (isset($_GET['membership'])) {
     WC()->cart->empty_cart();
     $woocommerce->cart->add_to_cart($productID);
 
-    if (isset($_GET['href'])) {
-        $href = $_GET['href'];
-        if ($href == "register") {
+
+    $href = $_GET['href'];
+    if ($href == "register") {
 ?> <script>
-                window.location.href = "/register";
-            </script><?php
-                        exit;
-                    } elseif ($href == "checkout") {
-                        ?> <script>
-                window.location.href = "/checkout";
-            </script><?php
-                        exit;
-                    }
+            window.location.href = "/register";
+        </script><?php
+                    exit;
+                } elseif ($href == "checkout") {
+                    ?> <script>
+            window.location.href = "/checkout";
+        </script><?php
+                    exit;
                 }
             } else {
-                        ?> <script>
+                    ?> <script>
         window.location.href = "/";
     </script><?php
                 exit;
