@@ -21,8 +21,9 @@ class Admin extends BaseController
 
     public function add_admin_pages()
     {
-        add_menu_page('Courses Plugin', 'Courses', 'manage_options', 'courses_plugin', array($this, 'admin_index'), '', '110');
-        add_submenu_page(null, 'Courses Plugin', null, 'manage_options', 'upload_file', array($this, 'admin_upload_index'), 2);
+        $link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[SERVER_NAME]";
+        add_menu_page('Courses Plugin', 'Courses', 'manage_options', 'courses_plugin', array($this, 'admin_index'), 'dashicons-welcome-learn-more', '58');
+        add_submenu_page(null, 'Courses Plugin', null, 'manage_options', 'upload_file', array($this, 'admin_upload_index'), '59');
     }
 
     public function admin_upload_index()
