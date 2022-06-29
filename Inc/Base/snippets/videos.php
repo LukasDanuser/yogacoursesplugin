@@ -80,7 +80,7 @@ if (is_user_logged_in()) {
         }
     } else {
         echo "<div class=\"accessDenied\" style=\"text-align: center;\">";
-        echo "<p style=\"border: 1px solid orange;max-width: fit-content;padding: 0.3rem;margin: auto;border-radius: 0.2rem;\">Diese Seite ist nur für Mitglieder zugänglich!<br>Sie können <a href=\"/membership\">hier</a> eine Mitgliedschaft kaufen.</p>";
+        echo "<p style=\"border: 1px solid orange;max-width: fit-content;padding: 0.3rem;margin: auto;border-radius: 0.2rem;\">Diese Seite ist nur für Mitglieder zugänglich!<br>Sie können <a href=\"/mitgliedschaft\">hier</a> eine Mitgliedschaft kaufen.</p>";
         echo "</div>";
     }
 }
