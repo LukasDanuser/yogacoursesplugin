@@ -65,8 +65,8 @@ if ($order_id != null) {
     $order = wc_get_order($order_id);
     $newRegisteredEmails = "";
 
-    $gold = 30;
-    $silver = 32;
+    $gold = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
+    $silver = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'semiannual'");
     $membership = 0;
     $membershipStr = "";
     $valid_until_new = "0000-00-00";
