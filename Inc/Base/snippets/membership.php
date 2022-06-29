@@ -20,10 +20,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
+global $wpdb;
 $href = "";
-$gold = 30;
-$silver = 32;
+$gold = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
+$silver = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'semiannual'");
 
 if (is_user_logged_in()) {
     $href = "checkout";
