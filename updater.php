@@ -123,6 +123,7 @@ class Courses_Updater
 
         if ($this->active) { // If it was active
             Inc\Base\Activate::activate();
+            header("Refresh:0");
             //activate_plugin($this->basename); // Reactivate
         }
         return $result;
