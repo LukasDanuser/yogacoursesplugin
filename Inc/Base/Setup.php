@@ -42,7 +42,6 @@ class Setup extends BaseController
             'addtocart',
             'Courses',
             'Course',
-            'Membership',
             'Thanks',
             'Videos'
         ];
