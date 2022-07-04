@@ -10,7 +10,6 @@ function uwp_account_available_tabs_cb($tabs)
 
     return $tabs;
 }
-//this is a test
 add_filter('uwp_account_page_title', 'uwp_account_page_title_cb', 10, 2);
 function uwp_account_page_title_cb($title, $type)
 {
