@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 if (isset($_GET['membership'])) {
     global $woocommerce;
-    global $wüdb;
+    global $wpdb;
     $href = "";
     $annual = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
     $semiAnnual = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'semiannual'");
@@ -41,8 +41,6 @@ if (isset($_GET['membership'])) {
     WC()->cart->empty_cart();
     $woocommerce->cart->add_to_cart($productID);
 
-
-    $href = $_GET['href'];
     if ($href == "register") {
 ?> <script>
             window.location.href = "/register";
