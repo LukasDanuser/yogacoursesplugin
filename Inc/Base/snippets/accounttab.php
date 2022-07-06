@@ -3,11 +3,13 @@ add_filter('uwp_account_available_tabs', 'uwp_account_available_tabs_cb', 10, 1)
 function uwp_account_available_tabs_cb($tabs)
 {
 
+    unset($tabs['notifications']);
+    unset($tabs['privacy']);
+
     $tabs['courses'] = array(
         'title' => __('Meine Kurse', 'userswp'),
         'icon'  => 'fas fa-graduation-cap',
     );
-
     return $tabs;
 }
 add_filter('uwp_account_page_title', 'uwp_account_page_title_cb', 10, 2);
@@ -28,8 +30,19 @@ function uwp_account_form_display_cb($type)
         $plugin_data = get_plugin_data(dirname(__FILE__, 3) . '/coursesplugin/courses-plugin.php');
         $plugin_version = $plugin_data['Version'];
         wp_enqueue_style('style', '/wp-content/plugins/coursesplugin/assets/style.css', __FILE__, $plugin_version);
-        echo 'Sie sind für folgende Kurse angemeldet<br><br>';
+        $date = date("Y-m-d");
+        $userID = null;
+        $membership = null;
+        $valid_until = null;
+        if (is_user_logged_in()) {
+            $userID = get_current_user_id();
+            $membership = $wpdb->get_var("SELECT membership FROM $wpdb->prefix" . "users WHERE ID = $userID");
+            $valid_until = $wpdb->get_var("SELECT subscription_valid_until FROM $wpdb->prefix" . "users WHERE ID = $userID");
+        }
+        $expirationDate = new DateTime($valid_until);
         $registeredCourses = explode(";", $wpdb->get_var("SELECT registered_courses FROM $wpdb->prefix" . "users WHERE ID = " . get_current_user_id()));
+        echo $membership > 0 ? ($date < $valid_until ? 'Ihre Mitgliedschaft ist noch gültig bis: ' . $expirationDate->format('d.m.Y') . '<br><br>' : 'Ihre Mitgliedschaft ist abgelaufen! Sie können sie <a href="/mitgliedschaft/#preise">hier</a> erneuern.<br><br>') : 'Sie sind kein Mitglied Sie können <a href="/mitgliedschaft/#preise">hier</a> eine Mitgliedschaft kaufen.<br><br>';
+        echo $wpdb->get_var("SELECT registered_courses FROM $wpdb->prefix" . "users WHERE ID = " . get_current_user_id()) == '0' ? 'Sie sind für keine Kurse angemeldet!' : 'Sie sind für folgende Kurse angemeldet<br><br>';
         $courseAmount = count($registeredCourses);
         $rowsNeeded = ceil($courseAmount / 2);
         $columnsNeeded = 0;
