@@ -41,7 +41,7 @@ function uwp_account_form_display_cb($type)
         }
         $expirationDate = new DateTime($valid_until);
         $registeredCourses = explode(";", $wpdb->get_var("SELECT registered_courses FROM $wpdb->prefix" . "users WHERE ID = " . get_current_user_id()));
-        echo $membership > 0 ? ($date < $valid_until ? 'Ihre Mitgliedschaft ist noch gültig bis: ' . $expirationDate->format('d.m.Y') . '<br><br>' : 'Ihre Mitgliedschaft ist abgelaufen! Sie können sie <a href="/mitgliedschaft/#preise">hier</a> erneuern.<br><br>') : 'Sie sind kein Mitglied Sie können <a href="/mitgliedschaft/#preise">hier</a> eine Mitgliedschaft kaufen.<br><br>';
+        echo $membership > 0 ? ($date < $valid_until ? 'Ihre Mitgliedschaft ist noch gültig bis: ' . $expirationDate->format('d.m.Y') . '<br><br>' : 'Ihre Mitgliedschaft ist abgelaufen! Sie können sie <a href="/mitgliedschaft/#preise">hier</a> erneuern.<br><br>') : 'Sie sind kein Mitglied! Sie können <a href="/mitgliedschaft/#preise">hier</a> eine Mitgliedschaft kaufen.<br><br>';
         echo $wpdb->get_var("SELECT registered_courses FROM $wpdb->prefix" . "users WHERE ID = " . get_current_user_id()) == '0' ? 'Sie sind für keine Kurse angemeldet!' : 'Sie sind für folgende Kurse angemeldet<br><br>';
         $courseAmount = count($registeredCourses);
         $rowsNeeded = ceil($courseAmount / 2);
