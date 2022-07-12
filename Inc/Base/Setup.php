@@ -78,6 +78,8 @@ class Setup extends BaseController
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "subscription_valid_until", "date", "display_name", "'0000-00-00'");
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "registered_courses", "text", "display_name", "'0'");
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "membership", "tinyint(11)", "display_name", 0);
+
+        $this->updateUsersWP();
     }
     function create_page($name)
     {
@@ -223,5 +225,21 @@ class Setup extends BaseController
                 'modified' => $datetime,
             )
         );
+    }
+
+    function updateUsersWP()
+    {
+        $code_to_replace = "echo aui()->button(array(
+            'type'    => 'a',
+            'href'    => uwp_build_profile_tab_url(\$user_id),
+            'class'   => 'mt-0 text-decoration-none font-weight-bold',
+            'icon'    => '',
+            'title'   => \$display_name,
+            'content' => '@' . \$display_name,
+        ));";
+        $link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[SERVER_NAME]";
+        $usersWP_file = file_get_contents($link . '/wp-content/plugins/userswp/templates/bootstrap/account.php', "r");
+        $usersWP_file_replaced = str_replace($code_to_replace, "", $usersWP_file);
+        file_put_contents($usersWP_file, $usersWP_file_replaced);
     }
 }
