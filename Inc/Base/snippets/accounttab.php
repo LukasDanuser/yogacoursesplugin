@@ -2,7 +2,6 @@
 add_filter('uwp_account_available_tabs', 'uwp_account_available_tabs_cb', 10, 1);
 function uwp_account_available_tabs_cb($tabs)
 {
-
     unset($tabs['notifications']);
     unset($tabs['privacy']);
 
