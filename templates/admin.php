@@ -98,6 +98,7 @@ if ($editCourse != "" || $editCourse != null) {
         $linkValue = $result->url;
         $dateValue = $result->date;
         $repeatValue = $result->repeat_every;
+        $maxRegValue = $result->max_registrations;
     }
 }
 
@@ -131,13 +132,15 @@ if ($deleteVid == "deleteVid") {
             if ($submit == "submitted") {
                 if ($editCourse != "" || $editCourse != null) {
                     $table = $wpdb->prefix . 'courses';
+                    $maxReg = $maxReg == 0 ? null : ($maxReg == "" ? null : $maxReg);
                     $data = array(
                         'course_name' => $course_name,
                         'price' => $price,
                         'date' => $date,
                         'repeat_every' => $repeat,
                         'description' => $description,
-                        'url' => $link
+                        'url' => $link,
+                        'max_registrations' => $maxReg,
                     );
                     $where = array('id' => $editCourse);
                     $wpdb->update($table, $data, $where);
@@ -220,7 +223,7 @@ if ($deleteVid == "deleteVid") {
         <option value="never">Nie</option>
     </select><br><br>
     <input type="text" name="description" id="description" placeholder="Beschreibung" value="<?php echo $descriptionValue; ?>" required><br><br>
-    <input type="number" name="maxReg" id="maxReg" placeholder="Maximale Anmeldungen" title="Leer lassen für unlimitiert" value="<?php echo $maxReg; ?>"><br><br>
+    <input type="number" name="maxReg" id="maxReg" placeholder="Maximale Anmeldungen" title="Leer lassen für unlimitiert" value="<?php echo $maxRegValue; ?>"><br><br>
     <input type="text" name="link" id="link" placeholder="Link" value="<?php echo $linkValue; ?>" required><br><br>
     <input type="submit" name="submit" value="Speichern">
 </form>
