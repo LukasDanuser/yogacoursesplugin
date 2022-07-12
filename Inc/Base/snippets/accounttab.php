@@ -27,6 +27,7 @@ function uwp_account_form_display_cb($type)
 {
     global $wpdb;
     if ($type == 'courses') {
+
         $plugin_data = get_plugin_data(dirname(__FILE__, 3) . '/coursesplugin/courses-plugin.php');
         $plugin_version = $plugin_data['Version'];
         wp_enqueue_style('style', '/wp-content/plugins/coursesplugin/assets/style.css', __FILE__, $plugin_version);
