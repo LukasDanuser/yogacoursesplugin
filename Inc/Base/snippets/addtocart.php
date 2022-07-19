@@ -52,8 +52,16 @@ if (isset($_GET['membership'])) {
         </script><?php
                     exit;
                 }
-            } else {
+            } else if (isset($_GET['id'])) {
+                $productID = $_GET['id'];
+                WC()->cart->empty_cart();
+                $woocommerce->cart->add_to_cart($productID);
                     ?> <script>
+        window.location.href = "/checkout";
+    </script><?php
+                exit;
+            } else {
+                ?> <script>
         window.location.href = "/";
     </script><?php
                 exit;
