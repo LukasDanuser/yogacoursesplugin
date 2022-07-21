@@ -1,15 +1,17 @@
 .course-card, .video-card {
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: column;
-    flex-direction: column;
-
-    word-wrap: break-word;
-    background-color: #fff;
-    background-clip: border-box;
-    border: 1px solid orange;
-    border-radius: .25rem;
+    border-top-color: #d9cdcd;
+    border-top-width: 3px;
+    border-top-style: dotted;
+    border-right-color: #d9cdcd;
+    border-right-width: 3px;
+    border-right-style: dotted;
+    border-bottom-color: #d9cdcd;
+    border-bottom-width: 3px;
+    border-bottom-style: dotted;
+    border-left-color: #d9cdcd;
+    border-left-width: 3px;
+    border-left-style: dotted;
+    text-align: center;
 
 }
 
