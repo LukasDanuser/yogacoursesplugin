@@ -113,8 +113,6 @@ if ($deleteVid == "deleteVid") {
     </script><?php
             }
             if ($delete == "delete") {
-
-
                 $id = isset($_REQUEST['delete']) ? htmlspecialchars($_REQUEST['delete']) : 0;
                 $result = $wpdb->get_var("SELECT product_id FROM $wpdb->prefix" . "courses WHERE id = $id");
                 $table = "$wpdb->prefix" . "wc_product_meta_lookup";
