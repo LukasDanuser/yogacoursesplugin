@@ -52,7 +52,7 @@ if (is_user_logged_in()) {
     if ($valid_until != "0000-00-00" and $membership != "0") {
         if ($date > $valid_until) {
             echo "<div class=\"expired\" style=\"text-align: center;\">";
-            echo "<p style=\"border: 1px solid orange;max-width: fit-content;padding: 0.3rem;margin: auto;border-radius: 0.2rem;\">Ihre Mitgliedschaft ist abgelaufen!<br>Sie können sie <a href=\"/membership\">hier</a> verlängern.</p>";
+            echo "<p style=\"border: 1px solid orange;max-width: fit-content;padding: 0.3rem;margin: auto;border-radius: 0.2rem;\">Ihre Mitgliedschaft ist abgelaufen!<br>Sie können sie <a href=\"/mitgliedschaft\">hier</a> verlängern.</p>";
             echo "</div>";
             echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat($columnsNeeded, 1fr); column-gap: 1rem; row-gap: 1rem; grid-template-rows: repeat($rowsNeeded, 1fr);\">";
             if (!empty($results)) {
