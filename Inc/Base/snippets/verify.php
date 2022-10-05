@@ -119,7 +119,7 @@ if ($order_id != null) {
             <div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
 <div class=\"content\" style=\"padding: 5px;\">
 <p>Hallo $first_name $last_name</p>
-<p>Vielen Dank für den kauf von der Mitgliedschaft für ein \"$membershipStr\".</p>
+<p>Vielen Dank für den Kauf von der Mitgliedschaft für ein \"$membershipStr\".</p>
 <p>Wir freuen uns Sie bald in unseren Kursen zu treffen.</p>
 <p>Freundliche Grüße</p>
 </div>
@@ -182,7 +182,7 @@ if ($order_id != null) {
         <div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
         <div class=\"content\" style=\"padding: 5px;\">
         <p>Hallo $first_name $last_name</p>
-        <p>Vielen Dank für den kauf vom Kurs \"$course_name\".</p>
+        <p>Vielen Dank für den Kauf vom Kurs \"$course_name\".</p>
         <p>Treten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
         <p>Freundliche Grüße</p>
         </div>
@@ -234,7 +234,7 @@ if ($order_id != null) {
     <div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
     <div class=\"content\" style=\"padding: 5px;\">
     <p>Hallo $first_name $last_name</p>
-    <p>Vielen Dank für den kauf vom Kurs \"$course_name\".</p>
+    <p>Vielen Dank für den Kauf vom Kurs \"$course_name\".</p>
     <p>Treten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
     <p>Freundliche Grüße</p>
     </div>
@@ -295,7 +295,7 @@ if ($order_id != null) {
 <div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
 <div class=\"content\" style=\"padding: 5px;\">
 <p>Hallo $name</p>
-<p>Vielen Dank für den kauf vom Kurs \"$course_name\".</p>
+<p>Vielen Dank für den Kauf vom Kurs \"$course_name\".</p>
 <p>Treten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
 <p>Freundliche Grüße</p>
 </div>
@@ -325,6 +325,7 @@ if ($order_id != null) {
                 }
                 $_SESSION['mailSent'] = $_SESSION['mailSent'] ? true : wp_mail($customerEmail, $subject, $message, $headers);
             }
+            echo "sent to " . $customerEmail;
             if ($refund == true) {
                 $order = wc_get_order($order_id);
                 // If it's something else such as a WC_Order_Refund, we don't want that.
