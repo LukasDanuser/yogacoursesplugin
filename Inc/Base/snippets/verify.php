@@ -70,8 +70,8 @@ if ($order_id != null) {
     $membership = 0;
     $membershipStr = "";
     $valid_until_new = "0000-00-00";
-    $first_name = $order->get_shipping_first_name();
-    $last_name = $order->get_shipping_last_name();
+    $first_name = $order->get_customer_first_name();
+    $last_name = $order->get_customer_last_name();
     $customerEmail = $order->get_billing_email();
 
     //if membership is bought
@@ -119,9 +119,9 @@ if ($order_id != null) {
             <div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
 <div class=\"content\" style=\"padding: 5px;\">
 <p>Hallo $first_name $last_name</p>
-<p>Vielen Dank für den Kauf von der Mitgliedschaft für ein \"$membershipStr\".</p>
+<p>Vielen Dank für den Kauf von der Mitgliedschaft für ein $membershipStr.</p>
 <p>Wir freuen uns Sie bald in unseren Kursen zu treffen.</p>
-<p>Freundliche Grüße</p>
+<p>Freundliche Grüsse</p>
 </div>
 </div>
 </html>
@@ -183,8 +183,8 @@ if ($order_id != null) {
         <div class=\"content\" style=\"padding: 5px;\">
         <p>Hallo $first_name $last_name</p>
         <p>Vielen Dank für den Kauf vom Kurs \"$course_name\".</p>
-        <p>Treten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
-        <p>Freundliche Grüße</p>
+        <p>Treten Sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
+        <p>Freundliche Grüsse</p>
         </div>
         </div>
         </html>";
@@ -235,8 +235,8 @@ if ($order_id != null) {
     <div class=\"content\" style=\"padding: 5px;\">
     <p>Hallo $first_name $last_name</p>
     <p>Vielen Dank für den Kauf vom Kurs \"$course_name\".</p>
-    <p>Treten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
-    <p>Freundliche Grüße</p>
+    <p>Treten Sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
+    <p>Freundliche Grüsse</p>
     </div>
     </div>
     </html>";
@@ -296,8 +296,8 @@ if ($order_id != null) {
 <div class=\"content\" style=\"padding: 5px;\">
 <p>Hallo $name</p>
 <p>Vielen Dank für den Kauf vom Kurs \"$course_name\".</p>
-<p>Treten sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
-<p>Freundliche Grüße</p>
+<p>Treten Sie dem Kurs am $course_date über folgenden Link bei:\n$course_link</p>
+<p>Freundliche Grüsse</p>
 </div>
 </div>
 </html>";

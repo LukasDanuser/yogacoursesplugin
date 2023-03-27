@@ -23,6 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 global $woocommerce;
 global $wpdb;
+session_start();
+$_SESSION['mailSent'] = false;
 if (isset($_GET['membership'])) {
     $href = "";
     $annual = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
