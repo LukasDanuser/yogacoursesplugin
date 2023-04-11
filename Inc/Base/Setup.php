@@ -52,7 +52,8 @@ class Setup extends BaseController
             'Verify',
             'deleteExpCourse',
             'Videos',
-            'updateCourses'
+            'updateCourses',
+            'registerButton'
         ];
         $global_snippets = [
             'accountTab'
@@ -78,6 +79,7 @@ class Setup extends BaseController
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "subscription_valid_until", "date", "display_name", "'0000-00-00'");
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "registered_courses", "text", "display_name", "'0'");
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "membership", "tinyint(11)", "display_name", 0);
+        $this->createDatabaseColumn("$wpdb->prefix" . "my_calendar", "courseID", "tinyint(11)", "event_end", 0);
     }
     function create_page($name)
     {
@@ -138,6 +140,7 @@ class Setup extends BaseController
   registrations int NOT NULL DEFAULT 0,
   max_registrations int DEFAULT null,
   registered_emails text not null DEFAULT '',
+  event_id int NOT NULL UNIQUE,
   PRIMARY KEY  (id)
 ) $charset_collate;";
 

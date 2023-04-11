@@ -60,6 +60,35 @@ function createProduct($title, $body, $price, $sku)
     return $post_id;
 }
 
+function createEvent()
+{
+    global $wpdb;
+    // TODO: Create my calendar event and link it to the course and product related.
+    // Load My Calendar plugin functions
+    include_once(ABSPATH . 'wp-content/plugins/my-calendar/my-calendar.php');
+
+    // Set up event details
+    $event = array(
+        'title' => 'My Event Title',
+        'start' => '2023-05-01 10:00:00',
+        'end' => '2023-05-01 12:00:00',
+        'all_day' => false,
+        'location' => '123 Main St, Anytown, USA',
+        'description' => 'This is my event description.'
+    );
+
+    // Insert event into the My Calendar plugin
+    $event_id = my_calendar_add_event($event);
+
+    // Check if event was added successfully
+    if (is_int($event_id) && $event_id > 0) {
+        echo 'Event added successfully with ID: ' . $event_id;
+        return $event_id;
+    } else {
+        echo 'Event could not be added.';
+    }
+}
+
 if ($editCourse != "" || $editCourse != null) {
     $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses WHERE id = $editCourse");
     foreach ($results as $result) {
@@ -148,6 +177,7 @@ if ($deleteVid == "deleteVid") {
         </script><?php
                 } else {
                     $product_id = createProduct($course_name, $description, $price, null);
+        $event_id = createEvent();
                     $table_name = "$wpdb->prefix" . "courses";
                     $maxReg = $maxReg == 0 ? null : ($maxReg == "" ? null : $maxReg);
                     $wpdb->insert(
@@ -160,7 +190,8 @@ if ($deleteVid == "deleteVid") {
                             'description' => $description,
                             'url' => $link,
                             'product_id' => $product_id,
-                            'max_registrations' => $maxReg
+                'max_registrations' => $maxReg,
+                'event_id' => $event_id
                         )
                     );
                     $_POST = array();
