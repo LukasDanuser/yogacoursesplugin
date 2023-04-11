@@ -41,7 +41,8 @@ class Courses_Updater
     private function get_repository_info()
     {
         if (is_null($this->github_response)) { // Do we have a response?
-            $request_uri = sprintf('https://api.github.com/repos/%s/%s/releases', $this->username, $this->repository); // Build URI
+            $request_uri = sprintf('https://gitlab.com/api/v4/projects/309/releases
+            ', $this->username, $this->repository); // Build URI
             if ($this->authorize_token) { // Is there an access token?
                 $request_uri = add_query_arg('access_token', $this->authorize_token, $request_uri); // Append it
             }
