@@ -27,21 +27,32 @@ $course_name = isset($_REQUEST['course_name']) ? htmlspecialchars($_REQUEST['cou
 $price = isset($_REQUEST['price']) ? htmlspecialchars($_REQUEST['price']) : "";
 $description = isset($_REQUEST['description']) ? htmlspecialchars($_REQUEST['description']) : "";
 $link = isset($_REQUEST['link']) ? htmlspecialchars($_REQUEST['link']) : "";
-$date = isset($_REQUEST['date']) ? htmlspecialchars($_REQUEST['date']) : "";
 $repeat = isset($_POST['repeat']) ? htmlspecialchars($_POST['repeat']) : "";
 $maxReg = isset($_REQUEST['maxReg']) ? htmlspecialchars($_REQUEST['maxReg']) : null;
 $submit = isset($_REQUEST['submit']) ? "submitted" : "";
 $delete = isset($_REQUEST['delete']) ? "delete" : "";
 $deleteVid = isset($_REQUEST['deleteVid']) ? 'deleteVid' : "";
 $editCourse = isset($_REQUEST['edit']) ? htmlspecialchars($_REQUEST['edit']) : "";
+$eventID = isset($_REQUEST['eventID']) ? htmlspecialchars($_REQUEST['eventID']) : 0;
 $course_nameValue = "";
 $priceValue = "";
 $descriptionValue = "";
+$eventIDValue = "";
 $linkValue = "";
-$dateValue = "";
 $repeatValue = "";
 $mmIDSet = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
+$current_datetime = date('Y-m-d H:i:s');
+$event_next_occur = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "my_calendar_events WHERE occur_event_id = $eventID");
+$date = "";
+$event_next_occur_id = "";
 
+foreach ($event_next_occur as $event) {
+    if ($event->occur_begin > $current_datetime) {
+        $date = $event->occur_begin;
+        $event_next_occur_id = $event->occur_id;
+        break;
+    }
+}
 
 function createProduct($title, $body, $price, $sku)
 {
@@ -58,35 +69,6 @@ function createProduct($title, $body, $price, $sku)
     $product->save();
 
     return $post_id;
-}
-
-function createEvent()
-{
-    global $wpdb;
-    // TODO: Create my calendar event and link it to the course and product related.
-    // Load My Calendar plugin functions
-    include_once(ABSPATH . 'wp-content/plugins/my-calendar/my-calendar.php');
-
-    // Set up event details
-    $event = array(
-        'title' => 'My Event Title',
-        'start' => '2023-05-01 10:00:00',
-        'end' => '2023-05-01 12:00:00',
-        'all_day' => false,
-        'location' => '123 Main St, Anytown, USA',
-        'description' => 'This is my event description.'
-    );
-
-    // Insert event into the My Calendar plugin
-    $event_id = my_calendar_add_event($event);
-
-    // Check if event was added successfully
-    if (is_int($event_id) && $event_id > 0) {
-        echo 'Event added successfully with ID: ' . $event_id;
-        return $event_id;
-    } else {
-        echo 'Event could not be added.';
-    }
 }
 
 if ($editCourse != "" || $editCourse != null) {
@@ -125,9 +107,9 @@ if ($editCourse != "" || $editCourse != null) {
         $priceValue = $result->price;
         $descriptionValue = $result->description;
         $linkValue = $result->url;
-        $dateValue = $result->date;
         $repeatValue = $result->repeat_every;
         $maxRegValue = $result->max_registrations;
+        $eventIDValue = $result->event_id;
     }
 }
 
@@ -168,6 +150,7 @@ if ($deleteVid == "deleteVid") {
                         'description' => $description,
                         'url' => $link,
                         'max_registrations' => $maxReg,
+                        'event_id' => $eventID
                     );
                     $where = array('id' => $editCourse);
                     $wpdb->update($table, $data, $where);
@@ -177,7 +160,6 @@ if ($deleteVid == "deleteVid") {
         </script><?php
                 } else {
                     $product_id = createProduct($course_name, $description, $price, null);
-        $event_id = createEvent();
                     $table_name = "$wpdb->prefix" . "courses";
                     $maxReg = $maxReg == 0 ? null : ($maxReg == "" ? null : $maxReg);
                     $wpdb->insert(
@@ -190,8 +172,8 @@ if ($deleteVid == "deleteVid") {
                             'description' => $description,
                             'url' => $link,
                             'product_id' => $product_id,
-                'max_registrations' => $maxReg,
-                'event_id' => $event_id
+                            'max_registrations' => $maxReg,
+                            'event_id' => $eventID,
                         )
                     );
                     $_POST = array();
@@ -230,8 +212,6 @@ if ($deleteVid == "deleteVid") {
 <form method="post">
     <input type="text" name="course_name" id="course_name" placeholder="Kurs Name" value="<?php echo $course_nameValue; ?>" required><br><br>
     <input type="number" name="price" id="price" placeholder="Preis" value="<?php echo $priceValue; ?>" required><br><br>
-    <label for="date">Datum</label>
-    <input type="datetime-local" name="date" id="date" placeholder="Datum" value="<?php echo $dateValue; ?>" required><br><br>
     <label for="repeat">Wiederholen</label>
     <select name="repeat" id="repeat" required>
         <?php
@@ -254,6 +234,7 @@ if ($deleteVid == "deleteVid") {
     <input type="text" name="description" id="description" placeholder="Beschreibung" value="<?php echo $descriptionValue; ?>" required><br><br>
     <input type="number" name="maxReg" id="maxReg" placeholder="Maximale Anmeldungen" title="Leer lassen für unlimitiert" value="<?php echo $maxRegValue; ?>"><br><br>
     <input type="text" name="link" id="link" placeholder="Link" value="<?php echo $linkValue; ?>" required><br><br>
+    <input type="number" name="eventID" id="eventID" placeholder="Event ID" value="<?php echo $eventIDValue; ?>" required><br><br>
     <input type="submit" name="submit" value="Speichern">
 </form>
 <form action="admin.php?page=upload_file" method="post" enctype="multipart/form-data">
@@ -329,13 +310,15 @@ if (!empty($results)) {
                     <h5 class=\"card-title text-center\"><b><u>
                                 <p>$row->course_name</p>
                             </u></b></h5>
-                    <p class=\"card-text\">$row->description</p>
+                    <p><b>Kurs ID: </b> $row->id</p>
+                    <p class=\"card-text\"><b>Beschreibung: </b>$row->description</p>
                     <p><b>Teilnehmer: </b> $row->registrations</p>
                     <p><b>Datum:</b> $courseDate</p>
                     <p><b>Wiederholung:</b> $repeatTemp</p>
                     <p><b>Max Anmeldungen:</b> $maxRegistrations</p>
                     <p><b>Link:</b><a href=\"$row->url\"> $row->url</a></p>
                     <p><b>Produkt ID:</b> $row->product_id</p>
+                    <p><b>Preis:</b> CHF $row->event_id</p>
                     <div class=\"text-center\">
                         <label class=\"control-label\" >
                             <p>CHF $row->price</p>
