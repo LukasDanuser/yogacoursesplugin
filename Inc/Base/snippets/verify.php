@@ -50,17 +50,31 @@ if ($order_id != null) {
     $order_item_id = $wc_order_item[0]->order_item_id;
     $wc_order_itemmeta = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "woocommerce_order_itemmeta WHERE order_item_id = $order_item_id AND meta_key = '_product_id'");
     $product_id = $wc_order_itemmeta[0]->meta_value;
-    $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id") == null ? $wpdb->insert(
-        $wpdb->prefix . 'courseOrders',
-        array(
-            'order_id' => $order_id,
-            'completed' => false,
-            'user_id' => $userID,
-            'product_id' => $product_id,
-            'order_date' => $datetime,
-            'refund' => false
-        )
-    ) : "";
+    if (is_user_logged_in()) {
+        $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id") == null ? $wpdb->insert(
+            $wpdb->prefix . 'courseOrders',
+            array(
+                'order_id' => $order_id,
+                'completed' => false,
+                'user_id' => $userID,
+                'product_id' => $product_id,
+                'order_date' => $datetime,
+                'refund' => false
+            )
+        ) : "";
+    } else {
+        $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id") == null ? $wpdb->insert(
+            $wpdb->prefix . 'courseOrders',
+            array(
+                'order_id' => $order_id,
+                'completed' => false,
+                'user_id' => 0,
+                'product_id' => $product_id,
+                'order_date' => $datetime,
+                'refund' => false
+            )
+        ) : "";
+    }
     $course_orders =  $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseOrders WHERE order_id = $order_id");
     $order = wc_get_order($order_id);
     $newRegisteredEmails = "";
@@ -163,14 +177,22 @@ if ($order_id != null) {
                     $data = array('registrations' => $courseInfo->registrations + 1);
                     $where = array('product_id' => $product_id);
                     $wpdb->update($table, $data, $where);
-
+                    $table = $wpdb->prefix . 'courseOccur';
+                    $data = array('verified' => 1);
+                    $where = array(
+                        'registered_user_id' => wp_get_current_user()->ID,
+                        'verified' => 0
+                    );
+                    $wpdb->update($table, $data, $where);
                     $newRegisteredEmails = "";
                     if ($courseInfo->registered_emails == '' or $courseInfo->registered_emails == null or $courseInfo->registered_emails == ' ') {
                         $newRegisteredEmails = ';' . $customerEmail . ';';
                     } else {
                         $newRegisteredEmails = $courseInfo->registered_emails . $customerEmail . ';';
                     }
+                    $table = $wpdb->prefix . 'courses';
                     $data = array('registered_emails' => $newRegisteredEmails);
+                    $where = array('product_id' => $product_id);
                     $wpdb->update($table, $data, $where);
                     echo "<div style=\"text-align:center;\">$thanksMessage</div>";
                     $subject = "Yoga Kurs";
@@ -230,6 +252,13 @@ if ($order_id != null) {
             $data = array('completed' => true);
             $where = array('order_id' => $order_id);
             $wpdb->update($table, $data, $where);
+            $table = $wpdb->prefix . 'courseOccur';
+            $data = array('verified' => 1);
+            $where = array(
+                'registered_user_email' => $customerEmail,
+                'verified' => 0
+            );
+            $wpdb->update($table, $data, $where);
             $message = "<html>
     <div class=\"container\" style=\"border: 1px solid orange; border-radius: .25rem;\">
     <div class=\"content\" style=\"padding: 5px;\">
@@ -276,6 +305,13 @@ if ($order_id != null) {
                         $table = $wpdb->prefix . 'courses';
                         $data = array('registrations' => $courseInfo->registrations + 1);
                         $where = array('product_id' => $product_id);
+                        $wpdb->update($table, $data, $where);
+                        $table = $wpdb->prefix . 'courseOccur';
+                        $data = array('verified' => 1);
+                        $where = array(
+                            'registered_user_id' => wp_get_current_user()->ID,
+                            'verified' => 0
+                        );
                         $wpdb->update($table, $data, $where);
                         $newRegisteredEmails = "";
                         if ($courseInfo->registered_emails == '' or $courseInfo->registered_emails == null or $courseInfo->registered_emails == ' ') {
@@ -378,6 +414,10 @@ if ($order_id != null) {
                 $where = array('order_id' => $order_id);
                 $wpdb->update($table, $data, $where);
                 $data = array('completed' => true);
+                $wpdb->update($table, $data, $where);
+                $table = $wpdb->prefix . 'courseOccur';
+                $data = array('verified' => 2);
+                $where = array('registered_user_email' => $customerEmail);
                 $wpdb->update($table, $data, $where);
                 echo "<div style=\"text-align:center;\">Die Zahlung wird ihnen zurückerstattet.</div>";
                 return $refund;

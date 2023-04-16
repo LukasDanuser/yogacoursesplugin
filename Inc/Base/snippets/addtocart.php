@@ -25,6 +25,9 @@ global $woocommerce;
 global $wpdb;
 session_start();
 $_SESSION['mailSent'] = false;
+$occur_id = isset($_GET['occur_id']) ? $_GET['occur_id'] : 0;
+$event_id = $wpdb->get_var("SELECT occur_event_id FROM $wpdb->prefix" . "my_calendar_events WHERE occur_id = $occur_id");
+$course_id = $wpdb->get_var("SELECT id FROM $wpdb->prefix" . "courses WHERE event_id = $event_id");
 if (isset($_GET['membership'])) {
     $href = "";
     $annual = $wpdb->get_var("SELECT membership_productID FROM $wpdb->prefix" . "courseSettings WHERE membership_type = 'annual'");
@@ -55,6 +58,33 @@ if (isset($_GET['membership'])) {
                     exit;
                 }
             } else if (isset($_GET['id'])) {
+                require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+                if (is_user_logged_in()) {
+                    $userID = wp_get_current_user()->ID;
+                    $userEmail = wp_get_current_user()->user_email;
+                    $table_name = $wpdb->prefix . "courseOccur";
+                    $sql =
+                        "INSERT INTO $table_name (occur_id, occur_event_id, course_id, registered_user_id, registered_user_email, verified) VALUES (
+                        $occur_id,
+                        $event_id,
+                        $course_id,
+                        $userID,
+                        \"$userEmail\",
+                        0)";
+                    dbDelta($sql);
+                } else {
+                    $email = isset($_GET['email']) ? $_GET['email'] : '';
+                    $table_name = $wpdb->prefix . "courseOccur";
+                    $sql =
+                        "INSERT INTO $table_name (occur_id, occur_event_id, course_id, registered_user_id, registered_user_email, verified) VALUES (
+                    $occur_id,
+                    $event_id,
+                    $course_id,
+                    0,
+                    \"$email\",
+                    0)";
+                    dbDelta($sql);
+                }
                 $productID = $_GET['id'];
                 WC()->cart->empty_cart();
                 $woocommerce->cart->add_to_cart($productID);

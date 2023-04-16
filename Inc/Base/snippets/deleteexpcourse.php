@@ -26,6 +26,12 @@ $date = date('Y-m-d H:i:s');
 $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses");
 $deleted = false;
 
+$table = $wpdb->prefix . 'courseOccur';
+$data = array('verified' => 2);
+$where = array('verified' => 0);
+$wpdb->update($table, $data, $where);
+
+
 $courses = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses");
 //get all users
 $users = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "users");
