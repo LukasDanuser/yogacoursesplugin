@@ -83,9 +83,6 @@ class Setup extends BaseController
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "membership", "tinyint(11)", "display_name", 0);
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "autooptin", "tinyint(11)", "display_name", 1);
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "email_next_course_auto_entry_sent", "tinyint(11)", "display_name", 0);
-        $this->createDatabaseColumn("$wpdb->prefix" . "courses", "occur_id", "tinyint(11)", "event_id", 0);
-        $this->createDatabaseColumn("$wpdb->prefix" . "courseOccur", "verified", "tinyint(11)", "registered_user_email", 0);
-        $this->createDatabaseColumn("$wpdb->prefix" . "courseOccur", "course_id", "tinyint(11)", "occur_event_id", 0);
     }
     function create_page($name)
     {
