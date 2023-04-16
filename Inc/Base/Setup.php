@@ -43,7 +43,8 @@ class Setup extends BaseController
             'Courses',
             'Course',
             'Thanks',
-            'Videos'
+            'Videos',
+            'RegisterCourse'
         ];
         $snippets = [
             'addtocart',
@@ -53,7 +54,8 @@ class Setup extends BaseController
             'deleteExpCourse',
             'Videos',
             'updateCourses',
-            'registerButton'
+            'registerButton',
+            'registerCourse',
         ];
         $global_snippets = [
             'accountTab'
@@ -79,7 +81,11 @@ class Setup extends BaseController
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "subscription_valid_until", "date", "display_name", "'0000-00-00'");
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "registered_courses", "text", "display_name", "'0'");
         $this->createDatabaseColumn("$wpdb->prefix" . "users", "membership", "tinyint(11)", "display_name", 0);
-        $this->createDatabaseColumn("$wpdb->prefix" . "my_calendar", "courseID", "tinyint(11)", "event_end", 0);
+        $this->createDatabaseColumn("$wpdb->prefix" . "users", "autooptin", "tinyint(11)", "display_name", 1);
+        $this->createDatabaseColumn("$wpdb->prefix" . "users", "email_next_course_auto_entry_sent", "tinyint(11)", "display_name", 0);
+        $this->createDatabaseColumn("$wpdb->prefix" . "courses", "occur_id", "tinyint(11)", "event_id", 0);
+        $this->createDatabaseColumn("$wpdb->prefix" . "courseOccur", "verified", "tinyint(11)", "registered_user_email", 0);
+        $this->createDatabaseColumn("$wpdb->prefix" . "courseOccur", "course_id", "tinyint(11)", "occur_event_id", 0);
     }
     function create_page($name)
     {
@@ -105,6 +111,10 @@ class Setup extends BaseController
             case "Videos":
                 $content = '[xyz-ips snippet="Videos"] [xyz-ips snippet="updateCourses"]';
                 $title = "Videos";
+                break;
+            case "RegisterCourse":
+                $content = '[xyz-ips snippet="registerCourse"]';
+                $title = "RegisterCourse";
                 break;
         }
         $page = [
@@ -140,7 +150,8 @@ class Setup extends BaseController
   registrations int NOT NULL DEFAULT 0,
   max_registrations int DEFAULT null,
   registered_emails text not null DEFAULT '',
-  event_id int NOT NULL UNIQUE,
+  event_id int NOT NULL UNIQUE DEFAULT 0,
+  occur_id int NOT NULL UNIQUE DEFAULT 0,
   PRIMARY KEY  (id)
 ) $charset_collate;";
 
@@ -173,6 +184,18 @@ class Setup extends BaseController
             id mediumint(9) NOT NULL UNIQUE AUTO_INCREMENT,
             membership_productID int NOT NULL UNIQUE DEFAULT 0,
             membership_type text NOT NULL DEFAULT '',
+            PRIMARY KEY (id)
+            ) $charset_collate;";
+        dbDelta($sql);
+        $table_name = $wpdb->prefix . "courseOccur";
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            id mediumint(9) NOT NULL UNIQUE AUTO_INCREMENT,
+            occur_id int NOT NULL DEFAULT 0,
+            occur_event_id text NOT NULL DEFAULT 0,
+            course_id int NOT NULL DEFAULT 0,
+            registered_user_id text NOT NULL DEFAULT 0,
+            registered_user_email text NOT NULL DEFAULT '',
+            verified int NOT NULL DEFAULT 0,
             PRIMARY KEY (id)
             ) $charset_collate;";
         dbDelta($sql);
