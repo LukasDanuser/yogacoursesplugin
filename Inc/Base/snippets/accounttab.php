@@ -76,7 +76,7 @@ function uwp_account_form_display_cb($type)
             $wpdb->update($table, $data, $where);
             echo " <script>window.location.replace(\"/account?type=courses\");</script>";
         }
-        echo "<a style=\"text-align: center;
+        echo "<br><a style=\"text-align: center;
 background-color: #d9cdcd;
 font-family: Open Sans,Helvetica, Arial, Sans-Serif, serif;
 font-weight: 600;
