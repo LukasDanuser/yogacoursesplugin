@@ -318,7 +318,7 @@ if (!empty($results)) {
                     <p><b>Max Anmeldungen:</b> $maxRegistrations</p>
                     <p><b>Link:</b><a href=\"$row->url\"> $row->url</a></p>
                     <p><b>Produkt ID:</b> $row->product_id</p>
-                    <p><b>Event ID:</b> CHF $row->event_id</p>
+                    <p><b>Event ID:</b> $row->event_id</p>
                     <div class=\"text-center\">
                         <label class=\"control-label\" >
                             <p>CHF $row->price</p>
