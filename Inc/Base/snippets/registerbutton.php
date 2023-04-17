@@ -26,9 +26,14 @@ $occur_id = isset($_GET['mc_id']) ? $_GET['mc_id'] : 0;
 $event_id = $wpdb->get_var("SELECT occur_event_id FROM $wpdb->prefix" . "my_calendar_events WHERE occur_id = $occur_id");
 $course = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses WHERE event_id = $event_id");
 $available = $course[0]->max_registrations - $course[0]->registrations;
-echo "Noch $available Plätze verfügbar";
-if ($available > 0 && is_user_logged_in()) {
-    echo "<br><br><a style=\"text-align: center;
+$date = date('Y-m-d H:i:s');
+if ($date < $course[0]->date) {
+    echo "Anmeldung nicht mehr möglich";
+    return;
+} else {
+    echo "Noch $available Plätze verfügbar";
+    if ($available > 0 && is_user_logged_in()) {
+        echo "<br><br><a style=\"text-align: center;
 background-color: #d9cdcd;
 font-family: Open Sans,Helvetica, Arial, Sans-Serif, serif;
 font-weight: 600;
@@ -59,8 +64,8 @@ padding-bottom: 12px;
 padding-left: 24px;
 padding-right: 24px;
 justify-content: center;\" href=\"/registercourse?event_id=$event_id&occur_id=$occur_id\">Anmelden</a>";
-} else {
-    echo "
+    } else {
+        echo "
     <br>
     <form action=\"/registercourse?event_id=$event_id&occur_id=$occur_id\" method=\"post\">
     <label for=\"email\">Email Addresse:</label>
@@ -98,4 +103,5 @@ justify-content: center;\" href=\"/registercourse?event_id=$event_id&occur_id=$o
     justify-content: center;\">
     </form>
 ";
+    }
 }
