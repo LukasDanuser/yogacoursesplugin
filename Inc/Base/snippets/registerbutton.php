@@ -27,7 +27,7 @@ $event_id = $wpdb->get_var("SELECT occur_event_id FROM $wpdb->prefix" . "my_cale
 $course = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses WHERE event_id = $event_id");
 $available = $course[0]->max_registrations - $course[0]->registrations;
 $date = date('Y-m-d H:i:s');
-if ($date < $course[0]->date) {
+if ($date > $course[0]->date) {
     echo "Anmeldung nicht mehr möglich";
     return;
 } else {

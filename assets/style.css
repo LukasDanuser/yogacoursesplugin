@@ -1,4 +1,5 @@
-.course-card, .video-card {
+.course-card,
+.video-card {
     border-top-color: #d9cdcd;
     border-top-width: 3px;
     border-top-style: dotted;
@@ -12,24 +13,27 @@
     border-left-width: 3px;
     border-left-style: dotted;
     text-align: left;
-
 }
 
-.course, .video {
+.course,
+.video {
     max-width: 20rem;
     min-width: 20rem;
-
 }
 
-.card-body, .video-body {
+.card-body,
+.video-body {
     margin: .5rem;
 }
 
-a, div {
+a,
+div {
     outline: 0;
 }
 
-*, ::after, ::before {
+*,
+ ::after,
+ ::before {
     box-sizing: border-box;
 }
 
@@ -42,4 +46,14 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     font-size: 13px;
     line-height: 1.4em;
+}
+
+.btn btn-primary btn-block text-uppercase {
+    border-color: #690380;
+    background-color: #690380;
+}
+
+.form-control btn btn-primary btn-block text-uppercase uwp_register_submit {
+    border-color: #690380;
+    background-color: #690380;
 }
