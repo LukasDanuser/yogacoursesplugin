@@ -189,6 +189,7 @@ class Setup extends BaseController
             id mediumint(9) NOT NULL UNIQUE AUTO_INCREMENT,
             occur_id int NOT NULL DEFAULT 0,
             occur_event_id text NOT NULL DEFAULT 0,
+            zoom_link text NOT NULL DEFAULT '',
             course_id int NOT NULL DEFAULT 0,
             registered_user_id text NOT NULL DEFAULT 0,
             registered_user_email text NOT NULL DEFAULT '',
