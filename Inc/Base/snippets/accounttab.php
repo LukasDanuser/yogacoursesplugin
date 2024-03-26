@@ -38,6 +38,7 @@ function uwp_account_page_title_cb($title, $type)
     return $title;
 }
 
+
 add_filter('uwp_account_form_display', 'uwp_account_form_display_cb', 10, 1);
 function uwp_account_form_display_cb($type)
 {

@@ -147,8 +147,7 @@ class Setup extends BaseController
   registrations int NOT NULL DEFAULT 0,
   max_registrations int DEFAULT null,
   registered_emails text not null DEFAULT '',
-  event_id int NOT NULL UNIQUE DEFAULT 0,
-  occur_id int NOT NULL UNIQUE DEFAULT 0,
+  event_id int NOT NULL DEFAULT 0,
   PRIMARY KEY  (id)
 ) $charset_collate;";
 

@@ -142,6 +142,7 @@ if ($deleteVid == "deleteVid") {
                 if ($editCourse != "" || $editCourse != null) {
                     $table = $wpdb->prefix . 'courses';
                     $maxReg = $maxReg == 0 ? null : ($maxReg == "" ? null : $maxReg);
+
                     $data = array(
                         'course_name' => $course_name,
                         'price' => $price,
@@ -155,27 +156,52 @@ if ($deleteVid == "deleteVid") {
                     $where = array('id' => $editCourse);
                     $wpdb->update($table, $data, $where);
                     $_POST = array();
+                    include_once("../Inc/Base/snippets/temp.php")
                 ?><script>
             window.location.href = "/wp-admin/admin.php?page=courses_plugin";
         </script><?php
                 } else {
+
+                    $dateFormat = str_replace(' ', 'T', $date);
                     $product_id = createProduct($course_name, $description, $price, null);
                     $table_name = "$wpdb->prefix" . "courses";
                     $maxReg = $maxReg == 0 ? null : ($maxReg == "" ? null : $maxReg);
-                    $wpdb->insert(
-                        $table_name,
-                        array(
-                            'course_name' => $course_name,
-                            'price' => $price,
-                            'date' => $date,
-                            'repeat_every' => $repeat,
-                            'description' => $description,
-                            'url' => $link,
-                            'product_id' => $product_id,
-                            'max_registrations' => $maxReg,
-                            'event_id' => $eventID,
-                        )
+                    echo $dateFormat;
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => "https://api.zoom.us/v2/users/l.danuser@rafisa.ch/meetings",
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => "",
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "POST",
+                        CURLOPT_POSTFIELDS => "{\r\n  \"agenda\": \"$course_name\",\r\n  \"start_time\": \"$dateFormat\",\r\n \"timezone\": \"Europe/Zurich\",\r\n \"default_password\": false,\r\n  \"duration\": 60,\r\n \"password\": \"\"\r\n}",
+                        CURLOPT_HTTPHEADER => array(
+                            "Authorization: Bearer  eyJzdiI6IjAwMDAwMSIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6ImZiNzE4OWUzLTRlMzYtNDEzMy04MzZjLTg0MDIyNTE3MTgzNiJ9.eyJ2ZXIiOjksImF1aWQiOiI4M2Y5ZWU0YjEwZWIwMWM3OWI1OGZhZTAzNmU4OGY3ZCIsImNvZGUiOiJSNnNCU2dmNkFmUXo2YnA1UjZtVHhDUHJ2VXI0Nk5tV2ciLCJpc3MiOiJ6bTpjaWQ6czQzUkJob3hSamF3TEJCN2RzYnV1USIsImdubyI6MCwidHlwZSI6MCwidGlkIjowLCJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiJFNXh4cVgxd1NwcWdLUkhZc2lxLUtBIiwibmJmIjoxNjkzOTE0MDUyLCJleHAiOjE2OTM5MTc2NTIsImlhdCI6MTY5MzkxNDA1MiwiYWlkIjoiVWlKUWd4enFTaGE3TzVwTnhTWUU2USJ9.mUrzjAvSm1LQJHlWvUDkNdE3vtACfUM6p0ybcHaLgyrsnfsP904EG83ZCuAzvhsYgEYMdkmEnBrtAow9Xhv-TA",
+                            "Content-Type: application/json"
+                        ),
+                    ));
+
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+                    $responseJSON = json_decode("[" . $response . "]", true);
+                    $join_url = $responseJSON[0]["join_url"];
+                    global $wpdb;
+                    $data = array(
+                        'course_name' => $course_name,
+                        'price' => $price,
+                        'date' => $date,
+                        'repeat_every' => $repeat,
+                        'description' => $description,
+                        'url' => $join_url,
+                        'product_id' => $product_id,
+                        'max_registrations' => $maxReg,
+                        'event_id' => $eventID
                     );
+                    $wpdb->insert($table_name, $data);
                     $_POST = array();
                 }
             }
@@ -207,7 +233,64 @@ if ($deleteVid == "deleteVid") {
                 EOL;
             }
 
+            if (isset($_REQUEST['testmeeting']) || isset($_REQUEST['code'])) {
 
+                // Check if the code has already been executed
+                session_start(); // Start a session (if not already started)
+                $access_token = "temp";
+
+                if (!isset($_REQUEST['code'])) {
+                    header("Location: https://zoom.us/oauth/authorize?response_type=code&client_id=s43RBhoxRjawLBB7dsbuuQ&redirect_uri=https://jolly-hamilton.185-101-158-220.plesk.page/wp-admin/admin.php?page=courses_plugin");
+                }
+                if (isset($_REQUEST['code'])) {
+                    $client_id = 's43RBhoxRjawLBB7dsbuuQ';
+                    $client_secret = 'JQ2nDt8lFZtynkT4R34sXUBLCXGO6btV';
+                    $code = $_GET['code'];
+                    $redirect_uri = 'jolly-hamilton.185-101-158-220.plesk.page/wp-admin/admin.php?page=courses_plugin';
+
+                    // Create the Authorization header
+                    $authorizationHeader = "Authorization: Basic " . base64_encode($client_id . ':' . $client_secret);
+                    function base64URLEncode($str)
+                    {
+                        return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($str));
+                    }
+
+                    function sha256_ASCII($buffer)
+                    {
+                        return hash('sha256', $buffer, true);
+                    }
+
+                    $codeVerifier = base64URLEncode(random_bytes(32));
+                    $codeChallenge = base64URLEncode(sha256_ASCII($codeVerifier));
+
+                    // Prepare the data for the POST request
+                    $data = array(
+                        "grant_type" => "authorization_code",
+                        "code" => $code,
+                        "redirect_uri" => $redirect_uri,
+                        "code_verifier" => $codeVerifier,
+                        "code_challange" => $codeChallenge
+                    );
+
+                    // Initialize cURL session
+                    $curl = curl_init("https://zoom.us/oauth/token");
+
+                    // Set cURL options
+                    curl_setopt($curl, CURLOPT_POST, true);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, array($authorizationHeader, "Content-Type: application/x-www-form-urlencoded"));
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+
+                    // Execute cURL request
+                    $response = curl_exec($curl);
+
+                    // Close cURL session
+                    curl_close($curl);
+
+                    // Now, $response contains the response from the server, including the access token
+                    var_dump($response);
+                }
+            }
                     ?>
 <form method="post">
     <input type="text" name="course_name" id="course_name" placeholder="Kurs Name" value="<?php echo $course_nameValue; ?>" required><br><br>
@@ -248,6 +331,9 @@ if ($deleteVid == "deleteVid") {
     <input type="submit" name="submit" value="Speichern" /><br>
 </form>
 <br>
+<form method="post">
+    <input type="submit" name="testmeeting" value="TestMeeting" /><br>
+</form>
 <?php
 $results = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courses ORDER BY date ASC");
 $videos = $wpdb->get_results("SELECT * FROM $wpdb->prefix" . "courseVideos");
