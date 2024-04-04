@@ -17,3 +17,6 @@ settings>>Form Builder>>Form Options: set "Registration Action" to "Auto approve
 
 With this plugin you can sell 2 memberships (half year or full year).
 You also can create and sell online courses.
+
+## TODO
+- WordPress database prefix is used to identify WordPress tables from others. As of now all tables use this prefix removing the purpuse of the prefix. This was done by mistake, so we need to remove the prefix from non-WordPress tables. https://themeisle.com/blog/wordpress-database-prefix/
