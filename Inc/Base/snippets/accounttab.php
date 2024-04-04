@@ -125,6 +125,7 @@ padding-left: 24px;
 padding-right: 24px;
 justify-content: center;\" href=\"/account?type=courses&autooptin=$autooptinnew\">$autooptinbutton</a><br><br>";
         echo "<div class=\"courses\" style=\"display: grid; grid-template-columns: repeat($columnsNeeded, 1fr); column-gap: 1rem; row-gap: 1rem; grid-template-rows: repeat($rowsNeeded, 1fr);\">";
+        if ($registeredCourses[0] != null or $registeredCourses[0] != "" or $registeredCourses[0] > 0) {
         foreach ($registeredCourses as $registeredCourse) {
             if ($registeredCourse == null or $registeredCourse == "" or $registeredCourse < 1) {
                 continue;
@@ -151,6 +152,7 @@ justify-content: center;\" href=\"/account?type=courses&autooptin=$autooptinnew\
     </div></a>
 </div>
             ";
+            }
         }
         echo "</div>";
     }
