@@ -248,8 +248,10 @@ if ($deleteVid == "deleteVid") {
                     $code = $_GET['code'];
                     $redirect_uri = 'jolly-hamilton.185-101-158-220.plesk.page/wp-admin/admin.php?page=courses_plugin';
 
-                    // Create the Authorization header
-                    $authorizationHeader = "Authorization: Basic " . base64_encode($client_id . ':' . $client_secret);
+        $clientIDandSecret = base64_encode($client_id . ':' . $client_secret);
+        // Create the Authorization header
+        $authorizationHeader = array("Host: zoom.us", "Authorization: Basic " . $clientIDandSecret, "Content-Type: application/x-www-form-urlencoded");
+        $tempheader = base64_encode($client_id . ':' . $client_secret);
                     function base64URLEncode($str)
                     {
                         return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($str));
@@ -260,26 +262,31 @@ if ($deleteVid == "deleteVid") {
                         return hash('sha256', $buffer, true);
                     }
 
-                    $codeVerifier = base64URLEncode(random_bytes(32));
+        $codeVerifier = base64URLEncode($clientIDandSecret);
                     $codeChallenge = base64URLEncode(sha256_ASCII($codeVerifier));
+        $temp = base64_decode($tempheader, true);
+        echo "\nbase 64\n";
+        var_dump($temp);
+        echo "\nbase 64 url\n";
 
                     // Prepare the data for the POST request
                     $data = array(
                         "grant_type" => "authorization_code",
                         "code" => $code,
                         "redirect_uri" => $redirect_uri,
-                        "code_verifier" => $codeVerifier,
-                        "code_challange" => $codeChallenge
+            "account_id" => 5066160394
+                     //   "code_verifier" => $codeVerifier,
+                      //  "code_challange" => $codeChallenge
                     );
-
-                    // Initialize cURL session
-                    $curl = curl_init("https://zoom.us/oauth/token");
+        var_dump($data);
+        // Initialize cURL session
+        $curl = curl_init("https://zoom.us/oauth/token&code=$code");
 
                     // Set cURL options
                     curl_setopt($curl, CURLOPT_POST, true);
                     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($curl, CURLOPT_HTTPHEADER, array($authorizationHeader, "Content-Type: application/x-www-form-urlencoded"));
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $authorizationHeader);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 
                     // Execute cURL request
                     $response = curl_exec($curl);
