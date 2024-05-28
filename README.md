@@ -1,7 +1,9 @@
 # CoursesPlugin
+This is a Yoga website for an external client. It is a wordpress information website, in which you can sign in to book yoga courses as a client. As an administrator you should do own courses and manage a calender on your own and handle your websites.
 
 This plugin only works with WooCommerce
 
+## Installation
 To make this plugin work you also need following plugins:
 "Insert PHP Code Snippet" by xyzscripts.com
 "Thanks Redirect for WooCommerce" by Nitin Prakash
